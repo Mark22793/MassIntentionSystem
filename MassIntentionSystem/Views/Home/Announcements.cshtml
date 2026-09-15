@@ -1,0 +1,50 @@
+﻿@model IEnumerable<MassIntentionSystem.Models.Announcement>
+@{
+    ViewData["Title"] = "Mga Anunsyo - Santo Domingo Church";
+}
+
+<!-- Hero Section -->
+<div class="hero-banner">
+    <div class="container">
+        <h1 class="fw-bold">Mga Anunsyo ng Parokya</h1>
+        <p class="lead mb-0">Manatiling updated sa mga gawain at abiso mula sa Santo Domingo Church.</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center p-4">
+                    <h5>Walang Anunsyo Sa Kasalukuyan</h5>
+                    <p class="mb-0 text-muted">Bumalik muli sa ibang pagkakataon para sa mga bagong balita mula sa Simbahan.</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var announcement in Model)
+                {
+                    <div class="card intention-card mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-purple px-3 py-2 fw-semibold" style="background-color: #7b2cbf;">
+                                    📢 Anunsyo
+                                </span>
+                                <small class="text-muted">
+                                    🗓️ @announcement.DatePosted.ToString("MMMM dd, yyyy")
+                                </small>
+                            </div>
+
+                            <h3 class="fw-bold mb-3" style="color: #4a154b;">@announcement.Title</h3>
+                            
+                            <p class="card-text text-secondary" style="white-space: pre-line; line-height: 1.7;">
+                                @announcement.Content
+                            </p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@model MassIntentionSystem.Models.MassSchedule
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Gumawa ng Schedule";
+}
+
+<div class="container-fluid py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm p-4">
+                <h4 class="fw-bold mb-3" style="color: #4a154b;">➕ Magdagdag ng Mass Schedule Slot</h4>
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="DayOfWeek" class="form-label fw-semibold">Araw (Day of Week)</label>
+                        <select asp-for="DayOfWeek" class="form-select" required>
+                            <option value="Monday">Lunes (Monday)</option>
+                            <option value="Tuesday">Martes (Tuesday)</option>
+                            <option value="Wednesday">Miyerkules (Wednesday)</option>
+                            <option value="Thursday">Huwebes (Thursday)</option>
+                            <option value="Friday">Biyernes (Friday)</option>
+                            <option value="Saturday">Sabado (Saturday)</option>
+                            <option value="Sunday">Linggo (Sunday)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Time" class="form-label fw-semibold">Oras (Time Slot)</label>
+                        <input asp-for="Time" type="time" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Language" class="form-label fw-semibold">Wika (Language)</label>
+                        <input asp-for="Language" class="form-control" placeholder="Tagalog / English" required />
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="PriestId" class="form-label fw-semibold">Officiating Priest</label>
+                        <select asp-for="PriestId" class="form-select" asp-items="ViewBag.PriestId">
+                            <option value="">-- Pumili ng Pari (Optional) --</option>
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Kanselahin</a>
+                        <button type="submit" class="btn btn-violet fw-bold">I-save Schedule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

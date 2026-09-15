@@ -1,0 +1,88 @@
+﻿@{
+    Layout = null; // Hindi kailangan ng standard layout para sa standalone login page
+    ViewData["Title"] = "Admin Login - Santo Domingo Church";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+            body {
+                background: linear-gradient(135deg, #320d33 0%, #4a154b 100%);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .login-card {
+                border: none;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+                width: 100%;
+                max-width: 420px;
+                overflow: hidden;
+            }
+
+            .login-header {
+                background-color: #4a154b;
+                border-bottom: 3px solid #d4af37;
+                color: #ffffff;
+                padding: 2rem 1.5rem;
+                text-align: center;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="card login-card">
+        <div class="login-header">
+            <h4 class="fw-bold mb-1">Santo Domingo Church</h4>
+            <span class="text-warning small fw-semibold">Secretariat & Admin Portal</span>
+        </div>
+        <div class="card-body p-4 bg-white">
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                    <small>@ViewBag.Error</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <form asp-controller="Account" asp-action="Login" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label for="username" class="form-label fw-semibold">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="I-enter ang username" required autofocus />
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="I-enter ang password" required />
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-violet btn-lg fw-bold fs-6">
+                        Mag-Login
+                    </button>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <a asp-controller="Home" asp-action="Index" class="text-muted small text-decoration-none">
+                    ← Bumalik sa Public Website
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

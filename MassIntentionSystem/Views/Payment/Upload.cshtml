@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Upload Payment Proof";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4">
+                <h4 class="fw-bold mb-3" style="color: #4a154b;">📤 Upload Proof of Payment</h4>
+                <form asp-action="Upload" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="intentionId" value="@ViewBag.IntentionId" />
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Pumili ng Image File (Screenshot)</label>
+                        <input type="file" name="file" class="form-control" accept="image/*" required />
+                    </div>
+                    <button type="submit" class="btn btn-gold fw-bold w-100">I-submit ang Resibo</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

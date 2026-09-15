@@ -1,0 +1,80 @@
+﻿@model MassIntentionSystem.Models.MassIntention
+
+@{
+    ViewData["Title"] = "Mag-request ng Mass Intention";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4 fw-bold text-primary">✍️ Form para sa Alay na Misa</h3>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">@ViewBag.Error</div>
+                    }
+
+                    <form asp-controller="MassIntention" asp-action="Create" method="post">
+                        <!-- 1. Petsa at Oras -->
+                        <h5 class="text-secondary border-bottom pb-2">1. Petsa at Oras ng Misa</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="MassDate" class="form-label fw-bold">Petsa (Mass Date)</label>
+                                <input asp-for="MassDate" type="date" class="form-control" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="MassTime" class="form-label fw-bold">Oras (Mass Time)</label>
+                                <select asp-for="MassTime" class="form-select" required>
+                                    <option value="06:00 AM">06:00 AM</option>
+                                    <option value="07:00 AM">07:00 AM</option>
+                                    <option value="12:00 PM">12:00 PM</option>
+                                    <option value="06:00 PM">06:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 2. Kategorya at Pangalan -->
+                        <h5 class="text-secondary border-bottom pb-2 mt-4">2. Kategorya at mga Pangalan</h5>
+                        <div class="mb-3">
+                            <label asp-for="Category" class="form-label fw-bold">Uri ng Intention</label>
+                            <select asp-for="Category" class="form-select" required>
+                                <option value="Healing & Good Health">Healing & Good Health</option>
+                                <option value="Thanksgiving">Thanksgiving</option>
+                                <option value="Soul / Deceased">Soul / Deceased</option>
+                                <option value="Special Intention">Special Intention</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="OfferingNames" class="form-label fw-bold">Mga Pangalan na Ipagdarasal</label>
+                            <textarea asp-for="OfferingNames" class="form-control" rows="3" placeholder="I-type dito ang mga pangalan..." required></textarea>
+                        </div>
+
+                        <!-- 3. Information -->
+                        <h5 class="text-secondary border-bottom pb-2 mt-4">3. Impormasyon ng Nag-request</h5>
+                        <div class="mb-3">
+                            <label asp-for="RequestorName" class="form-label fw-bold">Pangalan Mo (Requestor Name)</label>
+                            <input asp-for="RequestorName" class="form-control" placeholder="Juan Dela Cruz" required />
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="ContactNumber" class="form-label fw-bold">Contact Number</label>
+                                <input asp-for="ContactNumber" class="form-control" placeholder="09123456789" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="RequestorEmail" class="form-label fw-bold">Email Address</label>
+                                <input asp-for="RequestorEmail" type="email" class="form-control" placeholder="juan@gmail.com" />
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">🚀 I-submit ang Intention Request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

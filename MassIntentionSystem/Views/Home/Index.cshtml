@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="p-5 mb-4 bg-light rounded-3 shadow-sm border mt-3">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold text-primary">National Shrine of Our Lady of La Naval de Manila</h1>
+        <p class="fs-5 text-muted">Santo Domingo Church, Quezon City</p>
+        <p class="col-md-10 fs-6">
+            Mag-alay ng Misa para sa Kagalingan, Pasasalamat, o sa Alaala ng mga Sumakabilang-Buhay.
+        </p>
+        <div class="d-flex gap-2 mt-4">
+            <a class="btn btn-primary btn-lg" asp-controller="MassIntention" asp-action="Create">
+                <i class="bi bi-pencil-square"></i> Mag-Request ng Mass Intention
+            </a>
+            <a class="btn btn-outline-secondary btn-lg" asp-controller="MassIntention" asp-action="Track">
+                <i class="bi bi-search"></i> I-track ang Request
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0"><i class="bi bi-megaphone"></i> Mga Anunsyo ng Parokya</h4>
+    </div>
+    <div class="card-body">
+        <p class="card-text text-muted">Walang bagong anunsyo ngayong araw.</p>
+    </div>
+</div>

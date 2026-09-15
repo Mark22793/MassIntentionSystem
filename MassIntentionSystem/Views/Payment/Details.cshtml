@@ -1,0 +1,42 @@
+﻿@model MassIntentionSystem.Models.Payment
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Payment Details";
+}
+
+<div class="container-fluid py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white pt-4 pb-3">
+                    <h4 class="fw-bold m-0" style="color: #4a154b;">💳 Payment Transaction Details</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Reference Number:</div>
+                        <div class="col-sm-8 fw-bold">@Model.MassIntention?.ReferenceNo</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Halaga:</div>
+                        <div class="col-sm-8 text-success fw-bold fs-5">₱@Model.Amount.ToString("N2")</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Petsa:</div>
+                        <div class="col-sm-8">@Model.PaymentDate.ToString("MMMM dd, yyyy hh:mm tt")</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-sm-4 text-muted">Proof Receipt:</div>
+                        <div class="col-sm-8">
+                            @if (!string.IsNullOrEmpty(Model.ProofOfPaymentPath))
+                            {
+                                <img src="@Model.ProofOfPaymentPath" alt="Receipt" class="img-fluid rounded border style=" max-height: 300px;"" />
+                            }
+                        </div>
+                    </div>
+                    <hr />
+                    <a asp-action="Index" class="btn btn-outline-secondary">← Bumalik sa Listahan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

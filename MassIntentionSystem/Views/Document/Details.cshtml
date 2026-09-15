@@ -1,0 +1,122 @@
+﻿@model IEnumerable<MassIntentionSystem.Models.MassIntention>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Detalye ng Intention Sheet";
+}
+
+<div class="container-fluid py-3">
+    <!-- Action Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold m-0" style="color: #4a154b;">Buong Detalye ng Intention Sheet</h3>
+            <p class="text-muted small mb-0">Santo Domingo Church Secretariat Record</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">← Bumalik</a>
+            <form asp-controller="Document" asp-action="GenerateDoc" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="massDate" value="@ViewBag.MassDate" />
+                <input type="hidden" name="massTime" value="@ViewBag.MassTime" />
+                <input type="hidden" name="priestId" value="@ViewBag.PriestId" />
+                <button type="submit" class="btn btn-gold fw-bold">📥 Download (.doc)</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Info Metadata Box -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4 gold-border-left">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="text-muted small d-block">PETSA NG MISA</span>
+                    <strong class="fs-5 text-dark">@Convert.ToDateTime(ViewBag.MassDate).ToString("MMMM dd, yyyy")</strong>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted small d-block">ORAS NG MISA</span>
+                    <strong class="fs-5 text-dark">@DateTime.Today.Add((TimeSpan)ViewBag.MassTime).ToString("hh:mm tt")</strong>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted small d-block">PARING MAGMIMISA (CELEBRANT)</span>
+                    <strong class="fs-5 style=" color: #7b2cbf;"">@ViewBag.PriestName</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categorized Intentions Display -->
+    <div class="card border-0 shadow-sm p-4 bg-white">
+
+        <!-- I. Healing -->
+        <div class="mb-4">
+            <h5 class="fw-bold border-bottom pb-2" style="color: #4a154b;">I. HEALING & GOOD HEALTH</h5>
+            <ul class="list-group list-group-flush">
+                @foreach (var item in Model.Where(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Healing))
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@item.OfferingNames</span>
+                        <span class="badge bg-light text-dark border">Ref: @item.ReferenceNo</span>
+                    </li>
+                }
+                @if (!Model.Any(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Healing))
+                {
+                    <li class="list-group-item text-muted"><em>Walang nakatala sa kategoryang ito.</em></li>
+                }
+            </ul>
+        </div>
+
+        <!-- II. Thanksgiving -->
+        <div class="mb-4">
+            <h5 class="fw-bold border-bottom pb-2" style="color: #4a154b;">II. THANKSGIVING</h5>
+            <ul class="list-group list-group-flush">
+                @foreach (var item in Model.Where(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Thanksgiving))
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@item.OfferingNames</span>
+                        <span class="badge bg-light text-dark border">Ref: @item.ReferenceNo</span>
+                    </li>
+                }
+                @if (!Model.Any(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Thanksgiving))
+                {
+                    <li class="list-group-item text-muted"><em>Walang nakatala sa kategoryang ito.</em></li>
+                }
+            </ul>
+        </div>
+
+        <!-- III. Eternal Repose -->
+        <div class="mb-4">
+            <h5 class="fw-bold border-bottom pb-2" style="color: #4a154b;">III. ETERNAL REPOSE (FOR THE FAITHFUL DEPARTED)</h5>
+            <ul class="list-group list-group-flush">
+                @foreach (var item in Model.Where(i => i.Category == MassIntentionSystem.Models.IntentionCategory.EternalRepose))
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>+ @item.OfferingNames</span>
+                        <span class="badge bg-light text-dark border">Ref: @item.ReferenceNo</span>
+                    </li>
+                }
+                @if (!Model.Any(i => i.Category == MassIntentionSystem.Models.IntentionCategory.EternalRepose))
+                {
+                    <li class="list-group-item text-muted"><em>Walang nakatala sa kategoryang ito.</em></li>
+                }
+            </ul>
+        </div>
+
+        <!-- IV. Other Intentions -->
+        <div>
+            <h5 class="fw-bold border-bottom pb-2" style="color: #4a154b;">IV. OTHER INTENTIONS & SPECIAL PETITIONS</h5>
+            <ul class="list-group list-group-flush">
+                @foreach (var item in Model.Where(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Other))
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@item.OfferingNames</span>
+                        <span class="badge bg-light text-dark border">Ref: @item.ReferenceNo</span>
+                    </li>
+                }
+                @if (!Model.Any(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Other))
+                {
+                    <li class="list-group-item text-muted"><em>Walang nakatala sa kategoryang ito.</em></li>
+                }
+            </ul>
+        </div>
+
+    </div>
+</div>

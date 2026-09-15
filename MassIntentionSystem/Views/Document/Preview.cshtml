@@ -1,0 +1,72 @@
+﻿@model IEnumerable<MassIntentionSystem.Models.MassIntention>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Document Preview";
+}
+
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold m-0" style="color: #4a154b;">Mass Intention Sheet Preview</h3>
+            <p class="text-muted small mb-0">
+                <strong>Petsa:</strong> @ViewBag.MassDate |
+                <strong>Oras:</strong> @ViewBag.MassTime |
+                <strong>Celebrant:</strong> @ViewBag.PriestName
+            </p>
+        </div>
+        <form asp-controller="Document" asp-action="GenerateDoc" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="massDate" value="@ViewBag.RawMassDate" />
+            <input type="hidden" name="massTime" value="@ViewBag.RawMassTime" />
+            <input type="hidden" name="priestId" value="@ViewBag.PriestId" />
+            <button type="submit" class="btn btn-gold fw-bold">📥 Download Word File</button>
+        </form>
+    </div>
+
+    <div class="card border-0 shadow-sm p-4 bg-white">
+        <div class="text-center mb-4">
+            <h4 class="fw-bold text-uppercase mb-1" style="color: #4a154b;">National Shrine of Our Lady of La Naval de Manila</h4>
+            <h5 class="text-muted">Santo Domingo Church, Quezon City</h5>
+            <hr class="gold-border-bottom w-50 mx-auto" />
+        </div>
+
+        <!-- Healing Section -->
+        <h5 class="fw-bold text-purple mb-2">I. HEALING & GOOD HEALTH</h5>
+        <ul class="mb-4">
+            @foreach (var item in Model.Where(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Healing))
+            {
+                <li>@item.OfferingNames</li>
+            }
+            @if (!Model.Any(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Healing))
+            {
+                <li class="text-muted"><em>None</em></li>
+            }
+        </ul>
+
+        <!-- Thanksgiving Section -->
+        <h5 class="fw-bold text-purple mb-2">II. THANKSGIVING</h5>
+        <ul class="mb-4">
+            @foreach (var item in Model.Where(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Thanksgiving))
+            {
+                <li>@item.OfferingNames</li>
+            }
+            @if (!Model.Any(i => i.Category == MassIntentionSystem.Models.IntentionCategory.Thanksgiving))
+            {
+                <li class="text-muted"><em>None</em></li>
+            }
+        </ul>
+
+        <!-- Eternal Repose Section -->
+        <h5 class="fw-bold text-purple mb-2">III. ETERNAL REPOSE</h5>
+        <ul class="mb-4">
+            @foreach (var item in Model.Where(i => i.Category == MassIntentionSystem.Models.IntentionCategory.EternalRepose))
+            {
+                <li>+ @item.OfferingNames</li>
+            }
+            @if (!Model.Any(i => i.Category == MassIntentionSystem.Models.IntentionCategory.EternalRepose))
+            {
+                <li class="text-muted"><em>None</em></li>
+            }
+        </ul>
+    </div>
+</div>

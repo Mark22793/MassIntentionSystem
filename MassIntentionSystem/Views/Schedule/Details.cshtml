@@ -1,0 +1,35 @@
+﻿@model MassIntentionSystem.Models.MassSchedule
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Schedule Details";
+}
+
+<div class="container-fluid py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm p-4">
+                <h4 class="fw-bold mb-3" style="color: #4a154b;">📅 Detalye ng Schedule Slot</h4>
+                <div class="mb-3">
+                    <span class="text-muted d-block">Araw:</span>
+                    <strong class="fs-5">@Model.DayOfWeek</strong>
+                </div>
+                <div class="mb-3">
+                    <span class="text-muted d-block">Oras:</span>
+                    <span>@DateTime.Today.Add(Model.Time).ToString("hh:mm tt")</span>
+                </div>
+                <div class="mb-3">
+                    <span class="text-muted d-block">Wika:</span>
+                    <span>@Model.Language</span>
+                </div>
+                <div class="mb-4">
+                    <span class="text-muted d-block">Nagmimisang Pari:</span>
+                    <span class="fw-bold text-purple">@(Model.Priest?.Name ?? "Wala pang nakatalaga")</span>
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary">← Bumalik</a>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning fw-bold">Edit Schedule</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

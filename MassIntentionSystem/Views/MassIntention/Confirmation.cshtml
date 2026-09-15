@@ -1,0 +1,31 @@
+﻿@model MassIntentionSystem.Models.MassIntention
+
+@{
+    ViewData["Title"] = "Confirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow border-0 text-center mx-auto" style="max-width: 600px;">
+        <div class="card-body p-5">
+            <div class="mb-3 text-success">
+                <i class="bi bi-check-circle-fill display-1"></i>
+            </div>
+            <h2 class="fw-bold text-success mb-2">Naitala na ang iyong Request!</h2>
+            <p class="text-muted">Maraming salamat. Ang iyong Mass Intention ay matagumpay na na-save sa database.</p>
+            
+            <div class="alert alert-light border my-4 p-3">
+                <small class="text-uppercase text-muted d-block fw-bold mb-1">Ang Iyong Reference Code</small>
+                <span class="fs-2 fw-bold text-primary tracking-wide">@Model.ReferenceNo</span>
+            </div>
+
+            <p class="small text-muted mb-4">
+                Gamitin ang Reference Code na ito sa <a asp-controller="MassIntention" asp-action="Track">Track Request</a> page.
+            </p>
+
+            <div class="d-grid gap-2">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary btn-lg">Bumalik sa Home</a>
+            </div>
+        </div>
+    </div>
+</div>

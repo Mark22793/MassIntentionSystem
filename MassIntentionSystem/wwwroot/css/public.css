@@ -1,0 +1,55 @@
+﻿/* Public Header & Hero Banner */
+.public-header {
+    background-color: var(--sd-violet-primary);
+    color: #ffffff;
+    padding: 1.5rem 0;
+}
+
+.hero-banner {
+    background: linear-gradient(135deg, var(--sd-violet-dark) 0%, var(--sd-violet-primary) 100%);
+    color: #ffffff;
+    padding: 3rem 1rem;
+    border-bottom: 4px solid var(--sd-gold);
+    text-align: center;
+}
+
+/* Mass Intention Form Card */
+.intention-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.intention-card-header {
+    background-color: var(--sd-violet-primary);
+    color: #ffffff;
+    padding: 1.25rem 1.5rem;
+    font-weight: 700;
+}
+
+/* Step Headers */
+.form-step-title {
+    color: var(--sd-purple-accent);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* Upload & Payment Preview Box */
+.qr-container {
+    background-color: #ffffff;
+    border: 2px dashed var(--sd-purple-accent);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.qr-image {
+    max-width: 220px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}

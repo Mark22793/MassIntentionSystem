@@ -1,0 +1,43 @@
+﻿@model MassIntentionSystem.Models.Announcement
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Buong Detalye ng Anunsyo";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white pt-4 pb-3 d-flex justify-content-between align-items-center">
+                    <h4 class="fw-bold m-0" style="color: #4a154b;">Detalye ng Anunsyo</h4>
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success px-3 py-2">Naka-publish</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary px-3 py-2">Naka-draft</span>
+                    }
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="mb-3 text-muted small">
+                        🗓️ <strong>Petsa ng Pag-post:</strong> @Model.DatePosted.ToString("MMMM dd, yyyy - hh:mm tt")
+                    </div>
+
+                    <h3 class="fw-bold mb-3" style="color: #4a154b;">@Model.Title</h3>
+
+                    <div class="p-3 bg-light rounded border mb-4" style="white-space: pre-line; line-height: 1.7;">
+                        @Model.Content
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Bumalik sa Listahan</a>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-violet fw-bold px-4">✏️ Edit</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

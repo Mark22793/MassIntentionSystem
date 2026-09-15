@@ -1,0 +1,149 @@
+﻿@model MassIntentionSystem.Models.MassIntention
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "New Walk-in Request";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                <h4 class="fw-bold m-0" style="color: #1e293b;">
+                    <i class="bi bi-person-plus-fill text-primary me-2"></i>Walk-in Mass Intention (Cash)
+                </h4>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Bumalik</a>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="AdminCreate" method="post" id="intentionForm">
+                    
+                    <!-- Hidden inputs para sa model binding -->
+                    <input type="hidden" asp-for="Category" id="finalCategory" />
+                    <input type="hidden" asp-for="OfferingNames" id="finalOfferingNames" />
+
+                    <!-- Section 1: Petsa at Oras -->
+                    <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">1. Petsa at Oras ng Misa</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Petsa (Mass Date)</label>
+                            <input asp-for="MassDate" type="date" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Oras (Mass Time)</label>
+                            <select asp-for="MassTime" class="form-select" required>
+                                <option value="06:00:00">06:00 AM</option>
+                                <option value="07:30:00">07:30 AM</option>
+                                <option value="09:00:00">09:00 AM</option>
+                                <option value="10:30:00">10:30 AM</option>
+                                <option value="12:00:00">12:00 PM (Noon Mass)</option>
+                                <option value="16:00:00">04:00 PM</option>
+                                <option value="17:30:00">05:30 PM</option>
+                                <option value="19:00:00">07:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Mga Intention List -->
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                        <h6 class="fw-bold text-primary m-0">2. Kategorya at mga Pangalan</h6>
+                        <button type="button" class="btn btn-sm btn-outline-primary fw-bold" onclick="addIntentionBlock()">
+                            <i class="bi bi-plus-circle me-1"></i>+ Magdagdag ng Ibang Intention
+                        </button>
+                    </div>
+
+                    <div id="intentionsContainer">
+                        <div class="intention-item card bg-light border-0 p-3 mb-3">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Uri ng Intention</label>
+                                <select class="form-select category-input" required>
+                                    <option value="Healing">Healing & Good Health</option>
+                                    <option value="Thanksgiving">Thanksgiving</option>
+                                    <option value="EternalRepose">Eternal Repose (Yumao)</option>
+                                    <option value="Other">Special Intention / Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label fw-semibold">Mga Pangalan na Ipagdarasal</label>
+                                <textarea class="form-control names-input" rows="2" placeholder="I-type dito ang mga pangalan..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Client Info & Cash Payment -->
+                    <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">3. Impormasyon ng Nag-request at Bayad</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Pangalan ng Client</label>
+                            <input asp-for="RequestorName" class="form-control" placeholder="Juan Dela Cruz" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Contact Number</label>
+                            <input asp-for="ContactNumber" class="form-control" placeholder="09123456789" />
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold text-success">Halaga ng Bayad (Cash Stipend)</label>
+                            <div class="input-group">
+                                <span class="input-group-text fw-bold">₱</span>
+                                <input type="number" name="amountPaid" id="amountPaid" class="form-control fw-bold fs-5 text-success" value="100.00" step="any" min="0" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg fw-bold">
+                            <i class="bi bi-printer-fill me-2"></i>I-submit at Mag-Print ng Resibo
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addIntentionBlock() {
+        const container = document.getElementById('intentionsContainer');
+        const newBlock = document.createElement('div');
+        newBlock.className = 'intention-item card bg-light border-0 p-3 mb-3 position-relative';
+        newBlock.innerHTML = `
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" onclick="this.parentElement.remove()"></button>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Uri ng Intention</label>
+                <select class="form-select category-input" required>
+                    <option value="Healing">Healing & Good Health</option>
+                    <option value="Thanksgiving">Thanksgiving</option>
+                    <option value="EternalRepose">Eternal Repose (Yumao)</option>
+                    <option value="Other">Special Intention / Other</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label fw-semibold">Mga Pangalan na Ipagdarasal</label>
+                <textarea class="form-control names-input" rows="2" placeholder="I-type dito ang mga pangalan..." required></textarea>
+            </div>
+        `;
+        container.appendChild(newBlock);
+    }
+
+    document.getElementById('intentionForm').addEventListener('submit', function(e) {
+        const catInputs = document.querySelectorAll('.category-input');
+        const nameInputs = document.querySelectorAll('.names-input');
+        
+        let categories = [];
+        let combinedOfferings = [];
+
+        catInputs.forEach((select, index) => {
+            const catValue = select.value;
+            const namesValue = nameInputs[index].value.trim();
+            
+            categories.push(catValue);
+            if (namesValue) {
+                // Nilalagyan ng Tag prefix para ma-extract nang maayos sa Export Sheet
+                combinedOfferings.push(`[${catValue}]: ${namesValue}`);
+            }
+        });
+
+        document.getElementById('finalCategory').value = categories[0] || "Other";
+        document.getElementById('finalOfferingNames').value = combinedOfferings.join("\n");
+    });
+</script>

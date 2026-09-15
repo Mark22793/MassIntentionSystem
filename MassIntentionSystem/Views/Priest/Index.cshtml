@@ -1,0 +1,46 @@
+﻿@model IEnumerable<MassIntentionSystem.Models.Priest>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Talaan ng mga Pari";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold m-0" style="color: #4a154b;">⛪ Talaan ng mga Pari / Celebrants</h3>
+        <p class="text-muted small mb-0">Pamahalaan ang mga Pari na nagmimisa sa Santo Domingo Church.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-violet fw-bold">➕ Magdagdag ng Pari</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th>Pangalan (Name & Title)</th>
+                    <th>Email / Contact</th>
+                    <th>Status</th>
+                    <th class="text-center">Aksyon</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var priest in Model)
+                {
+                    <tr>
+                        <td><strong>@priest.Name</strong></td>
+                        <td>@priest.Email</td>
+                        <td>
+                            <span class="badge @(priest.IsActive ? "bg-success" : "bg-secondary")">
+                                @(priest.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@priest.Id" class="btn btn-sm btn-outline-warning">✏️ Edit</a>
+                            <a asp-action="Details" asp-route-id="@priest.Id" class="btn btn-sm btn-outline-info">👁️ Detalye</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

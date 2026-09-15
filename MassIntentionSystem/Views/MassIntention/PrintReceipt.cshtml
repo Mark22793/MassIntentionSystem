@@ -1,0 +1,110 @@
+﻿@model MassIntentionSystem.Models.MassIntention
+@{
+    Layout = null;
+    
+    decimal finalAmount = 0;
+    if (Model.Payment != null && Model.Payment.Amount > 0)
+    {
+        finalAmount = Model.Payment.Amount;
+    }
+    else if (TempData["PrintedAmount"] != null)
+    {
+        decimal.TryParse(TempData["PrintedAmount"].ToString(), out finalAmount);
+    }
+
+    // Formatting para sa TimeSpan papuntang 12-hour format (e.g., 06:00 AM)
+    string formattedTime = DateTime.Today.Add(Model.MassTime).ToString("hh:mm tt");
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Official Receipt - @Model.ReferenceNo</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body { background-color: #ffffff; font-family: Arial, sans-serif; }
+        .receipt-card { max-width: 650px; margin: 20px auto; border: 2px dashed #333; padding: 30px; }
+        @@media print {
+            .no-print { display: none !important; }
+            .receipt-card { border: 1px solid #000; margin: 0 auto; width: 100%; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="text-center my-3 no-print">
+        <button onclick="window.print()" class="btn btn-primary px-4 fw-bold">🖨️ Print Receipt</button>
+        <button onclick="window.close()" class="btn btn-secondary px-3">Isara</button>
+    </div>
+
+    <div class="receipt-card bg-white shadow-sm rounded">
+        <div class="text-center border-bottom pb-3 mb-3">
+            <h4 class="fw-bold m-0 text-uppercase" style="color: #4a154b;">Santo Domingo Church</h4>
+            <p class="small text-muted m-0">National Shrine of Our Lady of the Holy Rosary La Naval de Manila</p>
+            <h5 class="fw-bold mt-3 text-primary">OFFICIAL RECEIPT (MASS INTENTION)</h5>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-6">
+                <small class="text-muted d-block">Reference Number:</small>
+                <strong class="fs-6 text-dark">@Model.ReferenceNo</strong>
+            </div>
+            <div class="col-6 text-end">
+                <small class="text-muted d-block">Petsa ng Pag-encode:</small>
+                <strong>@Model.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")</strong>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-sm mb-3">
+            <tbody>
+                <tr>
+                    <th class="bg-light" style="width: 40%;">Nag-request (Client):</th>
+                    <td><strong>@Model.RequestorName</strong></td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Contact Number:</th>
+                    <td>@(string.IsNullOrEmpty(Model.ContactNumber) ? "N/A" : Model.ContactNumber)</td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Petsa at Oras ng Misa:</th>
+                    <td><strong>@Model.MassDate.ToString("MMMM dd, yyyy") (@formattedTime)</strong></td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Kategorya ng Misa:</th>
+                    <td>@Model.Category</td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Mga Pangalan (Offerings):</th>
+                    <td style="white-space: pre-line;">@Model.OfferingNames</td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Halaga ng Bayad (Stipend):</th>
+                    <td>
+                        <strong class="text-success fs-5">
+                            ₱@finalAmount.ToString("N2")
+                        </strong>
+                    </td>
+                </tr>
+                <tr>
+                    <th class="bg-light">Status ng Alay:</th>
+                    <td><span class="badge bg-success">CONFIRMED / PAID</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="text-end mt-5 pt-4 border-top">
+            <p class="small text-muted mb-4">Inaprubahan at Tinanggap ni:</p>
+            <p class="fw-bold text-decoration-underline mb-0">Parish Office Secretary / Admin</p>
+            <small class="text-muted">Santo Domingo Church Administration</small>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function() { window.print(); };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+﻿/* Sidebar Layout */
+#sidebar-wrapper {
+    background-color: var(--sd-violet-dark) !important;
+    min-height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-heading {
+    background-color: var(--sd-violet-primary) !important;
+    color: var(--sd-gold) !important;
+    font-family: 'Georgia', serif;
+    letter-spacing: 0.5px;
+}
+
+#sidebar-wrapper .list-group-item {
+    border: none;
+    color: #d8c5e2;
+    padding: 0.85rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+    #sidebar-wrapper .list-group-item:hover,
+    #sidebar-wrapper .list-group-item.active {
+        background-color: var(--sd-purple-accent) !important;
+        color: #ffffff !important;
+        border-left: 4px solid var(--sd-gold);
+    }
+
+/* Admin Dashboard Cards */
+.stat-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+    }
+
+.stat-icon {
+    font-size: 2.5rem;
+    color: var(--sd-purple-accent);
+}
+
+/* Data Tables */
+.table-admin {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+    .table-admin thead {
+        background-color: var(--sd-violet-primary);
+        color: #ffffff;
+    }
+
+    .table-admin th {
+        font-weight: 600;
+        padding: 1rem;
+    }
+
+    .table-admin td {
+        vertical-align: middle;
+        padding: 0.85rem 1rem;
+    }
+
+/* Verification Status Badges */
+.badge-status-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-status-verified {
+    background-color: #198754;
+    color: #ffffff;
+}
+
+.badge-status-cancelled {
+    background-color: #dc3545;
+    color: #ffffff;
+}

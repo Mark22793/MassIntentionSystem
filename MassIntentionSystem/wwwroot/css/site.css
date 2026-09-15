@@ -1,0 +1,72 @@
+:root {
+    --sd-violet-dark: #320d33;
+    --sd-violet-primary: #4a154b;
+    --sd-purple-accent: #7b2cbf;
+    --sd-purple-light: #9d4edd;
+    --sd-gold: #d4af37;
+    --sd-gold-hover: #b89327;
+    --sd-bg-light: #f8f9fa;
+    --sd-text-dark: #212529;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--sd-bg-light);
+    color: var(--sd-text-dark);
+}
+
+/* Custom Buttons */
+.btn-violet {
+    background-color: var(--sd-purple-accent);
+    color: #ffffff;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-violet:hover {
+        background-color: var(--sd-violet-primary);
+        color: #ffffff;
+        box-shadow: 0 4px 8px rgba(74, 21, 75, 0.3);
+    }
+
+.btn-gold {
+    background-color: var(--sd-gold);
+    color: #ffffff;
+    border: none;
+    font-weight: 600;
+}
+
+    .btn-gold:hover {
+        background-color: var(--sd-gold-hover);
+        color: #ffffff;
+    }
+
+/* Accent Borders */
+.gold-border-bottom {
+    border-bottom: 3px solid var(--sd-gold) !important;
+}
+
+.gold-border-left {
+    border-left: 4px solid var(--sd-gold) !important;
+}
+
+/* Custom Badges for Categories */
+.badge-category-healing {
+    background-color: #2a9d8f;
+    color: white;
+}
+
+.badge-category-thanksgiving {
+    background-color: #e9c46a;
+    color: #333;
+}
+
+.badge-category-eternal {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge-category-other {
+    background-color: var(--sd-purple-accent);
+    color: white;
+}

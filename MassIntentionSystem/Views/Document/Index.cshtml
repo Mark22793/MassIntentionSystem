@@ -1,0 +1,69 @@
+﻿@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Generate Word Document";
+}
+
+<div class="container-fluid py-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white pt-4 pb-3">
+                    <h4 class="fw-bold m-0" style="color: #4a154b;">📄 Generate Mass Intention Sheet</h4>
+                    <p class="text-muted small mb-0">Mag-download ng Word File (.doc) para sa Lector o sa Paring Magmimisa.</p>
+                </div>
+                <div class="card-body p-4">
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger">
+                            <div asp-validation-summary="All" class="small"></div>
+                        </div>
+                    }
+
+                    <form asp-controller="Document" asp-action="GenerateDoc" method="post" id="docExportForm">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Petsa ng Misa -->
+                        <div class="mb-3">
+                            <label for="massDate" class="form-label fw-semibold">Petsa ng Misa (Mass Date)</label>
+                            <input type="date" id="massDate" name="massDate" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                        </div>
+
+                        <!-- Oras ng Misa -->
+                        <div class="mb-3">
+                            <label for="massTime" class="form-label fw-semibold">Oras ng Misa (Mass Time)</label>
+                            <select id="massTime" name="massTime" class="form-select" required>
+                                <option value="06:00:00">06:00 AM</option>
+                                <option value="07:30:00">07:30 AM</option>
+                                <option value="09:00:00">09:00 AM</option>
+                                <option value="10:30:00">10:30 AM</option>
+                                <option value="12:00:00">12:00 PM (Noon Mass)</option>
+                                <option value="16:00:00">04:00 PM</option>
+                                <option value="17:30:00">05:30 PM</option>
+                                <option value="19:00:00">07:00 PM</option>
+                            </select>
+                        </div>
+
+                        <!-- Pari / Celebrant -->
+                        <div class="mb-4">
+                            <label for="priestSelect" class="form-label fw-semibold">Pari / Celebrant</label>
+                            <select id="priestSelect" name="priestId" class="form-select" asp-items="ViewBag.Priests" required>
+                                <option value="">-- Pumili ng Pari --</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-gold btn-lg fw-bold">
+                                📥 I-download ang Word Document (.doc)
+                            </button>
+                            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">
+                                Bumalik sa Dashboard
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

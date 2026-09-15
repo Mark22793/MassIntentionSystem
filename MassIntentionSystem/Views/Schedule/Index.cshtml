@@ -1,0 +1,44 @@
+﻿@model IEnumerable<MassIntentionSystem.Models.MassSchedule>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Mass Schedule Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold m-0" style="color: #4a154b;">📅 Pamamahala ng Oras ng Misa</h3>
+        <p class="text-muted small mb-0">I-manage ang mga time slot at i-assign ang officiating priests.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-violet fw-bold">➕ Magdagdag ng Schedule Slot</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th>Araw</th>
+                    <th>Oras</th>
+                    <th>Wika</th>
+                    <th>Pari</th>
+                    <th class="text-center">Aksyon</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@item.DayOfWeek</strong></td>
+                        <td>@DateTime.Today.Add(item.Time).ToString("hh:mm tt")</td>
+                        <td>@item.Language</td>
+                        <td>@(item.Priest?.Name ?? "Wala pang nakatalaga")</td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">✏️ Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">👁️ Detalye</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
