@@ -4,194 +4,185 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<!-- Title Header -->
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 fade-up">
     <div>
-        <h3 class="fw-bold m-0" style="color: #4a154b;">Dashboard Overview</h3>
-        <p class="text-muted small mb-0">Santo Domingo Church Mass Intention Management System</p>
+        <h3 class="fw-bold font-display text-navy m-0">Dashboard Overview</h3>
+        <p class="text-muted small mb-0">Santo Domingo Church &mdash; Mass Intention Management System</p>
     </div>
-    <a asp-controller="Document" asp-action="Index" class="btn btn-gold shadow-sm px-4">
-        📄 Generate Word Document
+    <a asp-controller="Document" asp-action="Index" class="btn btn-sd-primary">
+        <i class="bi bi-file-earmark-word me-1"></i> Generate Word Document
     </a>
 </div>
 
-<!-- Dynamic Summary Cards -->
 <div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card stat-card bg-white p-3 gold-border-left">
-            <div class="d-flex justify-content-between align-items-center">
+    <div class="col-6 col-lg-3">
+        <div class="sd-card sd-card-hover p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h6 class="text-muted small fw-bold text-uppercase mb-1">Kabuuan (Total)</h6>
-                    <h3 class="fw-bold m-0 text-dark">@ViewBag.TotalRequests</h3>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing:.04em;">Kabuuan</h6>
+                    <h2 class="fw-bold font-display text-navy m-0">@ViewBag.TotalRequests</h2>
                 </div>
-                <div class="stat-icon">📋</div>
+                <span class="d-flex align-items-center justify-content-center rounded-2xl" style="width:44px;height:44px;background:#EFF6FF;">
+                    <i class="bi bi-journal-text text-primary fs-5"></i>
+                </span>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card stat-card bg-white p-3 border-start border-warning border-4">
-            <div class="d-flex justify-content-between align-items-center">
+    <div class="col-6 col-lg-3">
+        <div class="sd-card sd-card-hover p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h6 class="text-muted small fw-bold text-uppercase mb-1">For Verification</h6>
-                    <h3 class="fw-bold m-0 text-warning">@ViewBag.PendingRequests</h3>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing:.04em;">For Verification</h6>
+                    <h2 class="fw-bold font-display m-0" style="color:#92400E;">@ViewBag.PendingRequests</h2>
                 </div>
-                <div class="stat-icon">⏳</div>
+                <span class="d-flex align-items-center justify-content-center rounded-2xl" style="width:44px;height:44px;background:#FEF3C7;">
+                    <i class="bi bi-hourglass-split fs-5" style="color:#92400E;"></i>
+                </span>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card stat-card bg-white p-3 border-start border-success border-4">
-            <div class="d-flex justify-content-between align-items-center">
+    <div class="col-6 col-lg-3">
+        <div class="sd-card sd-card-hover p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h6 class="text-muted small fw-bold text-uppercase mb-1">Verified</h6>
-                    <h3 class="fw-bold m-0 text-success">@ViewBag.VerifiedRequests</h3>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing:.04em;">Verified</h6>
+                    <h2 class="fw-bold font-display m-0 text-success">@ViewBag.VerifiedRequests</h2>
                 </div>
-                <div class="stat-icon">✅</div>
+                <span class="d-flex align-items-center justify-content-center rounded-2xl" style="width:44px;height:44px;background:var(--sd-success-bg);">
+                    <i class="bi bi-check-circle fs-5 text-success"></i>
+                </span>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card stat-card bg-white p-3 border-start border-info border-4">
-            <div class="d-flex justify-content-between align-items-center">
+    <div class="col-6 col-lg-3">
+        <div class="sd-card sd-card-hover p-4 h-100">
+            <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h6 class="text-muted small fw-bold text-uppercase mb-1">Misa Ngayong Araw</h6>
-                    <h3 class="fw-bold m-0 text-info">@ViewBag.TodayIntentions</h3>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1" style="letter-spacing:.04em;">Misa Ngayong Araw</h6>
+                    <h2 class="fw-bold font-display m-0 text-gold">@ViewBag.TodayIntentions</h2>
                 </div>
-                <div class="stat-icon">⛪</div>
+                <span class="d-flex align-items-center justify-content-center rounded-2xl" style="width:44px;height:44px;background:var(--sd-gold-50);">
+                    <i class="bi bi-church fs-5 text-gold"></i>
+                </span>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Table Container -->
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-white pt-3 pb-3 d-flex justify-content-between align-items-center">
-        <h5 class="fw-bold m-0" style="color: #4a154b;">Mga Huling Rehiyon / Requests</h5>
-        <div class="w-25">
-            <input type="text" id="adminSearchInput" class="form-control form-control-sm" placeholder="🔍 Mag-search (Ref Code, Name)..." />
+<div class="sd-card shadow-soft fade-up">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-4 pb-3 border-bottom">
+        <h5 class="fw-bold text-navy m-0">Mga Huling Requests</h5>
+        <div class="sd-field sd-field-noicon" style="max-width:280px;">
+            <input type="text" id="adminSearchInput" class="form-control form-control-sm" placeholder=" " />
+            <label style="font-size:.85rem;">🔍 Mag-search (Ref Code, Name)</label>
         </div>
     </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover table-admin mb-0">
-                <thead>
-                    <tr>
-                        <th>Ref Code</th>
-                        <th>Petsa ng Misa</th>
-                        <th>Kategorya</th>
-                        <th>Mga Pangalan (Offerings)</th>
-                        <th>Resibo</th>
-                        <th>Status</th>
-                        <th class="text-center">Aksyon</th>
-                    </tr>
-                </thead>
-                <tbody id="intentionsTableBody">
-                    @if (!Model.Any())
+    <div class="table-responsive">
+        <table class="table table-sd table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Ref Code</th>
+                    <th>Petsa ng Misa</th>
+                    <th>Kategorya</th>
+                    <th>Mga Pangalan</th>
+                    <th>Resibo</th>
+                    <th>Status</th>
+                    <th class="text-center">Aksyon</th>
+                </tr>
+            </thead>
+            <tbody id="intentionsTableBody">
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary"></i>
+                        Walang kamakailang mass intention requests.
+                    </td></tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
                     {
                         <tr>
-                            <td colspan="7" class="text-center py-4 text-muted">
-                                Walang kamakailang mass intention requests.
+                            <td><span class="badge bg-light text-dark border rounded-pill px-3">@item.ReferenceNo</span></td>
+                            <td>
+                                <strong>@item.MassDate.ToString("MMM dd, yyyy")</strong><br />
+                                <small class="text-muted">@DateTime.Today.Add(item.MassTime).ToString("hh:mm tt")</small>
+                            </td>
+                            <td>
+                                @switch (item.Category)
+                                {
+                                    case MassIntentionSystem.Models.IntentionCategory.Healing:
+                                        <span class="badge badge-category-healing rounded-pill px-3 py-2">Healing</span> break;
+                                    case MassIntentionSystem.Models.IntentionCategory.Thanksgiving:
+                                        <span class="badge badge-category-thanksgiving rounded-pill px-3 py-2">Thanksgiving</span> break;
+                                    case MassIntentionSystem.Models.IntentionCategory.EternalRepose:
+                                        <span class="badge badge-category-eternal rounded-pill px-3 py-2">Eternal Repose</span> break;
+                                    default:
+                                        <span class="badge badge-category-other rounded-pill px-3 py-2">Other</span> break;
+                                }
+                            </td>
+                            <td><div class="text-truncate" style="max-width:220px;" title="@item.OfferingNames">@item.OfferingNames</div></td>
+                            <td>
+                                @if (item.Payment != null && !string.IsNullOrEmpty(item.Payment.ProofOfPaymentPath))
+                                {
+                                    <button type="button" class="btn btn-sm btn-sd-outline btn-view-receipt"
+                                            data-bs-toggle="modal" data-bs-target="#receiptModal"
+                                            data-receipt-path="@item.Payment.ProofOfPaymentPath" data-ref-no="@item.ReferenceNo">
+                                        <i class="bi bi-image"></i> Silipin
+                                    </button>
+                                }
+                                else { <span class="text-muted small">Walang Proof</span> }
+                            </td>
+                            <td>
+                                @if (item.PaymentStatus == "Verified")
+                                { <span class="badge badge-status-verified rounded-pill px-3 py-2">Verified</span> }
+                                else if (item.PaymentStatus == "Cancelled")
+                                { <span class="badge badge-status-cancelled rounded-pill px-3 py-2">Cancelled</span> }
+                                else
+                                { <span class="badge badge-status-pending rounded-pill px-3 py-2">Pending</span> }
+                            </td>
+                            <td class="text-center">
+                                @if (item.PaymentStatus == "Pending")
+                                {
+                                    <button onclick="verifyPayment(@item.Id, 'Verified')" class="btn btn-sm btn-success rounded-xl me-1" title="Approve"><i class="bi bi-check-lg"></i></button>
+                                    <button onclick="verifyPayment(@item.Id, 'Cancelled')" class="btn btn-sm btn-danger rounded-xl" title="Reject"><i class="bi bi-x-lg"></i></button>
+                                }
+                                else { <span class="text-muted small">Naiproseso na</span> }
                             </td>
                         </tr>
                     }
-                    else
-                    {
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td><span class="badge bg-light text-dark border">@item.ReferenceNo</span></td>
-                                <td>
-                                    <strong>@item.MassDate.ToString("MMM dd, yyyy")</strong><br />
-                                    <small class="text-muted">@DateTime.Today.Add(item.MassTime).ToString("hh:mm tt")</small>
-                                </td>
-                                <td>
-                                    @switch (item.Category)
-                                    {
-                                        case MassIntentionSystem.Models.IntentionCategory.Healing:
-                                            <span class="badge badge-category-healing">Healing</span>
-                                            break;
-                                        case MassIntentionSystem.Models.IntentionCategory.Thanksgiving:
-                                            <span class="badge badge-category-thanksgiving">Thanksgiving</span>
-                                            break;
-                                        case MassIntentionSystem.Models.IntentionCategory.EternalRepose:
-                                            <span class="badge badge-category-eternal">Eternal Repose</span>
-                                            break;
-                                        default:
-                                            <span class="badge badge-category-other">Other</span>
-                                            break;
-                                    }
-                                </td>
-                                <td>
-                                    <div class="text-truncate" style="max-width: 250px;" title="@item.OfferingNames">
-                                        @item.OfferingNames
-                                    </div>
-                                </td>
-                                <td>
-                                    @if (item.Payment != null && !string.IsNullOrEmpty(item.Payment.ProofOfPaymentPath))
-                                    {
-                                        <button type="button"
-                                                class="btn btn-sm btn-outline-primary btn-view-receipt"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#receiptModal"
-                                                data-receipt-path="@item.Payment.ProofOfPaymentPath"
-                                                data-ref-no="@item.ReferenceNo">
-                                            🖼️ Silipin
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted small">Walang Proof</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.PaymentStatus == "Verified")
-                                    {
-                                        <span class="badge badge-status-verified">Verified</span>
-                                    }
-                                    else if (item.PaymentStatus == "Cancelled")
-                                    {
-                                        <span class="badge badge-status-cancelled">Cancelled</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge badge-status-pending">Pending</span>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    @if (item.PaymentStatus == "Pending")
-                                    {
-                                        <button onclick="verifyPayment(@item.Id, 'Verified')" class="btn btn-sm btn-success me-1" title="Approve Payment">
-                                            ✓
-                                        </button>
-                                        <button onclick="verifyPayment(@item.Id, 'Cancelled')" class="btn btn-sm btn-danger" title="Reject Request">
-                                            ✕
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted small">Naimproseso na</span>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-3xl border-0 shadow-xl-sd">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-navy">Proof of Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <img id="modalReceiptImg" src="" class="img-fluid rounded-2xl shadow-soft" alt="Payment Receipt" style="max-height:450px;" />
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Image Preview for Proof of Payment -->
-<div class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="receiptModalLabel">Proof of Payment</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center p-4">
-                <img id="modalReceiptImg" src="" class="img-fluid rounded shadow-sm" alt="Payment Receipt" style="max-height: 450px;" />
-            </div>
-        </div>
-    </div>
-</div>
+@section Scripts {
+<script>
+    document.querySelectorAll('.btn-view-receipt').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.getElementById('modalReceiptImg').src = this.dataset.receiptPath;
+        });
+    });
+    document.getElementById('adminSearchInput')?.addEventListener('keyup', function () {
+        const q = this.value.toUpperCase();
+        document.querySelectorAll('#intentionsTableBody tr').forEach(row => {
+            row.style.display = row.textContent.toUpperCase().includes(q) ? '' : 'none';
+        });
+    });
+</script>
+}

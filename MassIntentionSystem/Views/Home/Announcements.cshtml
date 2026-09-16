@@ -1,49 +1,48 @@
 ﻿@model IEnumerable<MassIntentionSystem.Models.Announcement>
 @{
     ViewData["Title"] = "Mga Anunsyo - Santo Domingo Church";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Hero Section -->
-<div class="hero-banner">
-    <div class="container">
-        <h1 class="fw-bold">Mga Anunsyo ng Parokya</h1>
-        <p class="lead mb-0">Manatiling updated sa mga gawain at abiso mula sa Santo Domingo Church.</p>
+<div class="hero-glow py-5">
+    <div class="container text-center fade-up">
+        <span class="badge rounded-pill px-3 py-2" style="background:var(--sd-gold-50); color:var(--sd-gold);">
+            <i class="bi bi-megaphone me-1"></i> Balita ng Parokya
+        </span>
+        <h1 class="font-display fw-bold text-navy mt-3">Mga Anunsyo ng Parokya</h1>
+        <div class="divider-gold mx-auto my-3"></div>
+        <p class="text-muted">Manatiling updated sa mga gawain at abiso mula sa Santo Domingo Church.</p>
     </div>
 </div>
 
-<div class="container my-5">
+<div class="container my-4">
     <div class="row justify-content-center">
-        <div class="col-lg-9">
+        <div class="col-lg-8">
             @if (!Model.Any())
             {
-                <div class="alert alert-info text-center p-4">
-                    <h5>Walang Anunsyo Sa Kasalukuyan</h5>
-                    <p class="mb-0 text-muted">Bumalik muli sa ibang pagkakataon para sa mga bagong balita mula sa Simbahan.</p>
+                <div class="sd-card text-center p-5 fade-up">
+                    <i class="bi bi-inbox fs-1 text-secondary d-block mb-2"></i>
+                    <h5 class="fw-bold text-navy">Walang Anunsyo Sa Kasalukuyan</h5>
+                    <p class="text-muted mb-0">Bumalik muli sa ibang pagkakataon para sa mga bagong balita mula sa Simbahan.</p>
                 </div>
             }
             else
             {
-                @foreach (var announcement in Model)
-                {
-                    <div class="card intention-card mb-4">
-                        <div class="card-body p-4">
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var announcement in Model)
+                    {
+                        <div class="sd-card sd-card-hover p-4 fade-up">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-purple px-3 py-2 fw-semibold" style="background-color: #7b2cbf;">
-                                    📢 Anunsyo
+                                <span class="chip chip-other">
+                                    <i class="bi bi-megaphone"></i> Anunsyo
                                 </span>
-                                <small class="text-muted">
-                                    🗓️ @announcement.DatePosted.ToString("MMMM dd, yyyy")
-                                </small>
+                                <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>@announcement.DatePosted.ToString("MMMM dd, yyyy")</small>
                             </div>
-
-                            <h3 class="fw-bold mb-3" style="color: #4a154b;">@announcement.Title</h3>
-                            
-                            <p class="card-text text-secondary" style="white-space: pre-line; line-height: 1.7;">
-                                @announcement.Content
-                            </p>
+                            <h4 class="fw-bold font-display text-navy mb-2">@announcement.Title</h4>
+                            <p class="text-muted mb-0" style="white-space: pre-line; line-height: 1.7;">@announcement.Content</p>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
             }
         </div>
     </div>

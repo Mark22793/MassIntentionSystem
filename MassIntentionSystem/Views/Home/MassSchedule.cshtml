@@ -1,46 +1,60 @@
 ﻿@model IEnumerable<MassIntentionSystem.Models.MassSchedule>
 @{
     ViewData["Title"] = "Oras ng mga Misa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container py-5">
-    <div class="text-center mb-4">
-        <h2 class="fw-bold" style="color: #4a154b;">Jornada / Oras ng Misa</h2>
-        <p class="text-muted">Santo Domingo Church Mass Schedules</p>
-    </div>
+<div class="hero-glow py-5">
+    <div class="container">
+        <div class="text-center mb-4 fade-up">
+            <span class="badge rounded-pill px-3 py-2" style="background:var(--sd-gold-50); color:var(--sd-gold);">
+                <i class="bi bi-calendar-event me-1"></i> Jornada ng Misa
+            </span>
+            <h1 class="font-display fw-bold text-navy mt-3">Oras ng mga Misa</h1>
+            <div class="divider-gold mx-auto my-3"></div>
+            <p class="text-muted">Santo Domingo Church Mass Schedules</p>
+        </div>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-0">
-                    <table class="table table-striped mb-0">
-                        <thead style="background-color: #4a154b; color: white;">
-                            <tr>
-                                <th>Araw (Day)</th>
-                                <th>Oras (Time)</th>
-                                <th>Wika (Language)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null && Model.Any())
-                            {
-                                @foreach (var sched in Model)
+        <div class="row justify-content-center fade-up">
+            <div class="col-lg-8">
+                <div class="sd-card shadow-md-sd overflow-hidden">
+                    <div class="table-responsive">
+                        <table class="table table-sd mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Araw (Day)</th>
+                                    <th>Oras (Time)</th>
+                                    <th>Wika (Language)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    @foreach (var sched in Model)
+                                    {
+                                        <tr>
+                                            <td class="fw-bold text-navy">@sched.DayOfWeek</td>
+                                            <td>
+                                                <span class="badge bg-light text-dark border rounded-pill px-3 py-2">
+                                                    <i class="bi bi-clock me-1"></i>@DateTime.Today.Add(sched.Time).ToString("hh:mm tt")
+                                                </span>
+                                            </td>
+                                            <td class="text-muted">@sched.Language</td>
+                                        </tr>
+                                    }
+                                }
+                                else
                                 {
                                     <tr>
-                                        <td><strong>@sched.DayOfWeek</strong></td>
-                                        <td>@DateTime.Today.Add(sched.Time).ToString("hh:mm tt")</td>
-                                        <td>@sched.Language</td>
+                                        <td colspan="3" class="text-center text-muted py-4">
+                                            <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+                                            Lunes hanggang Linggo: 6:00 AM &ndash; 7:00 PM
+                                        </td>
                                     </tr>
                                 }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-3">Lunes hanggang Linggo: 6:00 AM - 7:00 PM</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

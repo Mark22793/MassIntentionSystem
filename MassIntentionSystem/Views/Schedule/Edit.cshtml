@@ -1,48 +1,66 @@
 ﻿@model MassIntentionSystem.Models.MassSchedule
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Edit Schedule Slot";
+    ViewData["Title"] = "I-edit ang Schedule";
 }
 
-<div class="container-fluid py-3">
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm p-4">
-                <h4 class="fw-bold mb-3" style="color: #4a154b;">✏️ Edit Mass Schedule</h4>
-                <form asp-action="Edit" method="post">
-                    <input type="hidden" asp-for="Id" />
-                    <div class="mb-3">
-                        <label asp-for="DayOfWeek" class="form-label fw-semibold">Araw</label>
-                        <select asp-for="DayOfWeek" class="form-select" required>
-                            <option value="Monday">Lunes</option>
-                            <option value="Tuesday">Martes</option>
-                            <option value="Wednesday">Miyerkules</option>
-                            <option value="Thursday">Huwebes</option>
-                            <option value="Friday">Biyernes</option>
-                            <option value="Saturday">Sabado</option>
-                            <option value="Sunday">Linggo</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Time" class="form-label fw-semibold">Oras</label>
-                        <input asp-for="Time" type="time" class="form-control" required />
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Language" class="form-label fw-semibold">Wika</label>
-                        <input asp-for="Language" class="form-control" required />
-                    </div>
-                    <div class="mb-4">
-                        <label asp-for="PriestId" class="form-label fw-semibold">Officiating Priest</label>
-                        <select asp-for="PriestId" class="form-select" asp-items="ViewBag.PriestId">
-                            <option value="">-- Pumili ng Pari --</option>
-                        </select>
-                    </div>
-                    <div class="d-flex justify-content-end gap-2">
-                        <a asp-action="Index" class="btn btn-outline-secondary">Kanselahin</a>
-                        <button type="submit" class="btn btn-success fw-bold">I-update</button>
-                    </div>
-                </form>
-            </div>
+<div class="row justify-content-center fade-up">
+    <div class="col-lg-6">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold font-display text-navy m-0">I-edit ang Mass Schedule Slot</h4>
+            <a asp-action="Index" class="btn btn-sd-outline btn-sm"><i class="bi bi-arrow-left me-1"></i> Bumalik</a>
         </div>
+
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="sd-card shadow-md-sd p-4">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <div class="sd-field">
+                    <i class="bi bi-calendar-week sd-icon"></i>
+                    <select asp-for="DayOfWeek" class="form-select" required>
+                        <option value="Monday">Lunes (Monday)</option>
+                        <option value="Tuesday">Martes (Tuesday)</option>
+                        <option value="Wednesday">Miyerkules (Wednesday)</option>
+                        <option value="Thursday">Huwebes (Thursday)</option>
+                        <option value="Friday">Biyernes (Friday)</option>
+                        <option value="Saturday">Sabado (Saturday)</option>
+                        <option value="Sunday">Linggo (Sunday)</option>
+                    </select>
+                    <label asp-for="DayOfWeek">Araw</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="sd-field">
+                    <i class="bi bi-clock sd-icon"></i>
+                    <input asp-for="Time" type="time" class="form-control" placeholder=" " required />
+                    <label asp-for="Time">Oras</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="sd-field">
+                    <i class="bi bi-translate sd-icon"></i>
+                    <input asp-for="Language" class="form-control" placeholder=" " required />
+                    <label asp-for="Language">Wika</label>
+                </div>
+            </div>
+            <div class="mb-4">
+                <div class="sd-field">
+                    <i class="bi bi-person-badge sd-icon"></i>
+                    <select asp-for="PriestId" class="form-select" asp-items="ViewBag.PriestId">
+                        <option value="">-- Pumili ng Pari (Optional) --</option>
+                    </select>
+                    <label asp-for="PriestId">Officiating Priest</label>
+                </div>
+            </div>
+            <div class="form-check form-switch p-3 rounded-2xl mb-4" style="background:var(--sd-bg);">
+                <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                <label asp-for="IsActive" class="form-check-label fw-semibold">Active (ipapakita sa public schedule)</label>
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-action="Index" class="btn btn-sd-outline">Kanselahin</a>
+                <button type="submit" class="btn btn-sd-primary px-4"><i class="bi bi-save me-1"></i> I-update</button>
+            </div>
+        </form>
     </div>
 </div>

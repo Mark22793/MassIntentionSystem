@@ -1,83 +1,45 @@
-﻿/* Sidebar Layout */
-#sidebar-wrapper {
-    background-color: var(--sd-violet-dark) !important;
-    min-height: 100vh;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+﻿.sd-nav-link {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    color: #94A3B8;
+    font-weight: 500;
+    font-size: .92rem;
+    padding: .65rem .9rem;
+    border-radius: .75rem;
+    text-decoration: none;
+    transition: all .15s ease;
 }
 
-.sidebar-heading {
-    background-color: var(--sd-violet-primary) !important;
-    color: var(--sd-gold) !important;
-    font-family: 'Georgia', serif;
-    letter-spacing: 0.5px;
-}
-
-#sidebar-wrapper .list-group-item {
-    border: none;
-    color: #d8c5e2;
-    padding: 0.85rem 1.25rem;
-    transition: all 0.2s ease;
-}
-
-    #sidebar-wrapper .list-group-item:hover,
-    #sidebar-wrapper .list-group-item.active {
-        background-color: var(--sd-purple-accent) !important;
-        color: #ffffff !important;
-        border-left: 4px solid var(--sd-gold);
+    .sd-nav-link i {
+        font-size: 1.05rem;
+        width: 20px;
+        text-align: center;
     }
 
-/* Admin Dashboard Cards */
-.stat-card {
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease;
-}
-
-    .stat-card:hover {
-        transform: translateY(-3px);
+    .sd-nav-link:hover {
+        background: rgba(255,255,255,.06);
+        color: #fff;
     }
 
-.stat-icon {
-    font-size: 2.5rem;
-    color: var(--sd-purple-accent);
-}
-
-/* Data Tables */
-.table-admin {
-    background-color: #ffffff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-    .table-admin thead {
-        background-color: var(--sd-violet-primary);
-        color: #ffffff;
+    .sd-nav-link.active {
+        background: rgba(217,119,6,.15);
+        color: #F59E0B;
     }
 
-    .table-admin th {
-        font-weight: 600;
-        padding: 1rem;
-    }
-
-    .table-admin td {
-        vertical-align: middle;
-        padding: 0.85rem 1rem;
-    }
-
-/* Verification Status Badges */
-.badge-status-pending {
-    background-color: #ffc107;
-    color: #212529;
+.sd-nav-link-gold {
+    color: #F59E0B;
 }
 
-.badge-status-verified {
-    background-color: #198754;
-    color: #ffffff;
-}
+    .sd-nav-link-gold:hover {
+        background: rgba(217,119,6,.15);
+        color: #FBBF24;
+    }
 
-.badge-status-cancelled {
-    background-color: #dc3545;
-    color: #ffffff;
+@media (max-width: 991.98px) {
+    #sd-sidebar {
+        position: fixed !important;
+        z-index: 1040;
+        height: 100vh;
+    }
 }

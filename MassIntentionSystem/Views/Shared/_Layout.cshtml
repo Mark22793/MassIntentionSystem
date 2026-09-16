@@ -3,54 +3,83 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0F172A" />
     <title>@ViewData["Title"] - La Naval de Manila</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">La Naval de Manila</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-flex-grow-1 navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="MassIntention" asp-action="Create">Request Intention</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-controller="MassIntention" asp-action="Track">Track Request</a>
-                        </li>
-                    </ul>
+<body class="bg-soft">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
 
-                    <!-- Admin Login Link sa Kanan -->
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="btn btn-outline-light btn-sm" asp-controller="Account" asp-action="Login">
-                                <i class="bi bi-box-arrow-in-right"></i> Admin Login
-                            </a>
-                        </li>
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg navbar-dark glass-navy py-3" style="--bs-navbar-color: #fff;">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-2 fw-bold font-display" asp-controller="Home" asp-action="Index">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-xl"
+                          style="width:38px;height:38px;background:linear-gradient(135deg,#F59E0B,#D97706);">
+                        <i class="bi bi-church text-white fs-5"></i>
+                    </span>
+                    <span>
+                        La Naval de Manila
+                        <small class="d-block text-white-50 fw-normal" style="font-size:.65rem; letter-spacing:.04em;">SANTO DOMINGO CHURCH</small>
+                    </span>
+                </a>
+                <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <i class="bi bi-list fs-2 text-white"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav mx-auto gap-lg-1 mt-3 mt-lg-0">
+                        <li class="nav-item"><a class="nav-link text-white-50 px-3 rounded-xl" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link text-white-50 px-3 rounded-xl" asp-controller="Home" asp-action="MassSchedule">Mass Schedule</a></li>
+                        <li class="nav-item"><a class="nav-link text-white-50 px-3 rounded-xl" asp-controller="Home" asp-action="Announcements">Announcements</a></li>
+                        <li class="nav-item"><a class="nav-link text-white-50 px-3 rounded-xl" asp-controller="MassIntention" asp-action="Track">Track Request</a></li>
                     </ul>
+                    <div class="d-flex flex-column flex-lg-row gap-2 mt-3 mt-lg-0">
+                        <a class="btn btn-sd-primary btn-sm" asp-controller="MassIntention" asp-action="Create">
+                            <i class="bi bi-candle me-1"></i> Request Intention
+                        </a>
+                        <a class="btn btn-sm btn-outline-light rounded-xl" asp-controller="Account" asp-action="Login">
+                            <i class="bi bi-shield-lock me-1"></i> Admin
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <main id="main-content" role="main" class="pb-5">
+        @RenderBody()
+    </main>
 
-    <footer class="border-top footer text-muted text-center py-3">
+    <footer class="bg-navy text-white-50 pt-5 pb-4 mt-5">
         <div class="container">
-            &copy; 2026 - National Shrine of Our Lady of La Naval de Manila (Santo Domingo Church)
+            <div class="row g-4">
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-church text-gold fs-4"></i>
+                        <span class="fw-bold text-white font-display">National Shrine of Our Lady of La Naval de Manila</span>
+                    </div>
+                    <p class="small mb-0">Santo Domingo Church, Quezon City &mdash; serving the faithful since 1954.</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="text-white fw-bold small text-uppercase mb-3">Quick Links</h6>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><a asp-controller="MassIntention" asp-action="Create" class="text-white-50 text-decoration-none">Request Mass Intention</a></li>
+                        <li><a asp-controller="MassIntention" asp-action="Track" class="text-white-50 text-decoration-none">Track Request</a></li>
+                        <li><a asp-controller="Home" asp-action="About" class="text-white-50 text-decoration-none">About the Parish</a></li>
+                        <li><a asp-controller="Home" asp-action="Contact" class="text-white-50 text-decoration-none">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="text-white fw-bold small text-uppercase mb-3">Office Hours</h6>
+                    <p class="small mb-1"><i class="bi bi-clock me-2"></i>Mon&ndash;Sat: 8:00 AM &ndash; 5:00 PM</p>
+                    <p class="small mb-0"><i class="bi bi-geo-alt me-2"></i>Quezon City, Philippines</p>
+                </div>
+            </div>
+            <hr class="border-secondary my-4" />
+            <div class="text-center small">&copy; @DateTime.Now.Year National Shrine of Our Lady of La Naval de Manila. All rights reserved.</div>
         </div>
     </footer>
 

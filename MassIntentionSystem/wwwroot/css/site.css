@@ -1,72 +1,422 @@
+/* ============================================================
+   SANTO DOMINGO CHURCH — "MODERN SACRED" DESIGN SYSTEM
+   Design tokens + Tailwind-inspired utility layer on Bootstrap 5
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-    --sd-violet-dark: #320d33;
-    --sd-violet-primary: #4a154b;
-    --sd-purple-accent: #7b2cbf;
-    --sd-purple-light: #9d4edd;
-    --sd-gold: #d4af37;
-    --sd-gold-hover: #b89327;
-    --sd-bg-light: #f8f9fa;
-    --sd-text-dark: #212529;
+    /* Color tokens */
+    --sd-navy: #0F172A;
+    --sd-navy-800: #1E293B;
+    --sd-navy-700: #334155;
+    --sd-gold: #D97706;
+    --sd-gold-light: #F59E0B;
+    --sd-gold-50: #FFFBEB;
+    --sd-white: #FFFFFF;
+    --sd-slate: #64748B;
+    --sd-slate-400: #94A3B8;
+    --sd-bg: #F8FAFC;
+    --sd-border: #E2E8F0;
+    --sd-success: #059669;
+    --sd-success-bg: #ECFDF5;
+    --sd-danger: #DC2626;
+    --sd-danger-bg: #FEF2F2;
+    --sd-info: #2563EB;
+    --sd-info-bg: #EFF6FF;
+    /* Elevation */
+    --sd-shadow-sm: 0 1px 2px rgba(15,23,42,.05);
+    --sd-shadow-md: 0 4px 6px -1px rgba(15,23,42,.08), 0 2px 4px -2px rgba(15,23,42,.05);
+    --sd-shadow-lg: 0 10px 15px -3px rgba(15,23,42,.08), 0 4px 6px -4px rgba(15,23,42,.05);
+    --sd-shadow-xl: 0 20px 25px -5px rgba(15,23,42,.12), 0 8px 10px -6px rgba(15,23,42,.05);
+    /* Radius */
+    --sd-radius-lg: 0.875rem;
+    --sd-radius-xl: 1.125rem;
+    --sd-radius-2xl: 1.5rem;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--sd-bg-light);
-    color: var(--sd-text-dark);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--sd-bg);
+    color: var(--sd-navy-800);
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Buttons */
-.btn-violet {
-    background-color: var(--sd-purple-accent);
-    color: #ffffff;
+h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+}
+
+/* ---------- Focus rings (WCAG-friendly, visible, high contrast) ---------- */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, .btn:focus-visible {
+    outline: 3px solid var(--sd-gold-light);
+    outline-offset: 2px;
+}
+
+/* ---------- Radius utilities ---------- */
+.rounded-xl {
+    border-radius: var(--sd-radius-lg) !important;
+}
+
+.rounded-2xl {
+    border-radius: var(--sd-radius-xl) !important;
+}
+
+.rounded-3xl {
+    border-radius: var(--sd-radius-2xl) !important;
+}
+
+/* ---------- Shadow utilities ---------- */
+.shadow-soft {
+    box-shadow: var(--sd-shadow-sm) !important;
+}
+
+.shadow-md-sd {
+    box-shadow: var(--sd-shadow-md) !important;
+}
+
+.shadow-lg-sd {
+    box-shadow: var(--sd-shadow-lg) !important;
+}
+
+.shadow-xl-sd {
+    box-shadow: var(--sd-shadow-xl) !important;
+}
+
+/* ---------- Glassmorphism ---------- */
+.glass {
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.6);
+}
+
+.glass-navy {
+    background: rgba(15,23,42,.72);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+/* ---------- Buttons ---------- */
+.btn-sd-primary {
+    background: linear-gradient(135deg, var(--sd-gold-light), var(--sd-gold));
+    color: #fff;
     border: none;
-    transition: all 0.3s ease;
+    font-weight: 600;
+    border-radius: var(--sd-radius-lg);
+    padding: .65rem 1.4rem;
+    box-shadow: 0 4px 12px rgba(217,119,6,.28);
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 }
 
-    .btn-violet:hover {
-        background-color: var(--sd-violet-primary);
-        color: #ffffff;
-        box-shadow: 0 4px 8px rgba(74, 21, 75, 0.3);
+    .btn-sd-primary:hover, .btn-sd-primary:focus {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(217,119,6,.35);
+        filter: brightness(1.03);
     }
 
-.btn-gold {
-    background-color: var(--sd-gold);
-    color: #ffffff;
+.btn-sd-navy {
+    background: var(--sd-navy);
+    color: #fff;
     border: none;
+    font-weight: 600;
+    border-radius: var(--sd-radius-lg);
+    padding: .65rem 1.4rem;
+    transition: transform .15s ease, background .15s ease;
+}
+
+    .btn-sd-navy:hover {
+        background: var(--sd-navy-800);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+.btn-sd-outline {
+    background: #fff;
+    border: 1.5px solid var(--sd-border);
+    color: var(--sd-navy-800);
+    font-weight: 600;
+    border-radius: var(--sd-radius-lg);
+    padding: .6rem 1.3rem;
+    transition: all .15s ease;
+}
+
+    .btn-sd-outline:hover {
+        border-color: var(--sd-gold-light);
+        color: var(--sd-gold);
+        background: var(--sd-gold-50);
+    }
+
+/* ---------- Cards ---------- */
+.sd-card {
+    background: #fff;
+    border: 1px solid var(--sd-border);
+    border-radius: var(--sd-radius-xl);
+    box-shadow: var(--sd-shadow-sm);
+    transition: box-shadow .2s ease, transform .2s ease;
+}
+
+.sd-card-hover:hover {
+    box-shadow: var(--sd-shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* ---------- Floating-label inputs (icon-prefixed) ---------- */
+.sd-field {
+    position: relative;
+}
+
+    .sd-field .sd-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--sd-slate-400);
+        font-size: 1.05rem;
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    .sd-field input.form-control,
+    .sd-field select.form-select,
+    .sd-field textarea.form-control {
+        border: 1.5px solid var(--sd-border);
+        border-radius: var(--sd-radius-lg);
+        padding: 1.15rem 1rem 0.45rem 2.75rem;
+        height: auto;
+        background: #fff;
+        font-weight: 500;
+        color: var(--sd-navy-800);
+        transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .sd-field textarea.form-control {
+        padding-top: 1.4rem;
+    }
+
+        .sd-field input.form-control:focus,
+        .sd-field select.form-select:focus,
+        .sd-field textarea.form-control:focus {
+            border-color: var(--sd-gold-light);
+            box-shadow: 0 0 0 4px rgba(217,119,6,.12);
+        }
+
+    .sd-field label {
+        position: absolute;
+        left: 2.75rem;
+        top: 0.85rem;
+        font-size: .95rem;
+        color: var(--sd-slate);
+        transition: all .15s ease;
+        pointer-events: none;
+        background: transparent;
+    }
+
+    .sd-field input:focus ~ label,
+    .sd-field input:not(:placeholder-shown) ~ label,
+    .sd-field select ~ label,
+    .sd-field textarea:focus ~ label,
+    .sd-field textarea:not(:placeholder-shown) ~ label {
+        top: 0.35rem;
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .03em;
+        text-transform: uppercase;
+        color: var(--sd-gold);
+    }
+
+    .sd-field select.form-select {
+        padding-left: 2.75rem;
+    }
+
+.sd-field-noicon input.form-control,
+.sd-field-noicon select.form-select,
+.sd-field-noicon textarea.form-control {
+    padding-left: 1rem;
+}
+
+.sd-field-noicon label {
+    left: 1rem;
+}
+
+/* ---------- Chips / Badges (dynamic intention preview) ---------- */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .32rem .75rem;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+.chip-healing {
+    background: #ECFDF5;
+    color: #047857;
+    border-color: #A7F3D0;
+}
+
+.chip-thanksgiving {
+    background: #EFF6FF;
+    color: #1D4ED8;
+    border-color: #BFDBFE;
+}
+
+.chip-eternal {
+    background: #F1F5F9;
+    color: #334155;
+    border-color: #CBD5E1;
+}
+
+.chip-other {
+    background: var(--sd-gold-50);
+    color: var(--sd-gold);
+    border-color: #FDE68A;
+}
+
+.chip .chip-remove {
+    cursor: pointer;
+    opacity: .6;
+    font-size: .7rem;
+}
+
+    .chip .chip-remove:hover {
+        opacity: 1;
+    }
+
+.badge-status-pending {
+    background: #FEF3C7;
+    color: #92400E;
     font-weight: 600;
 }
 
-    .btn-gold:hover {
-        background-color: var(--sd-gold-hover);
-        color: #ffffff;
-    }
-
-/* Accent Borders */
-.gold-border-bottom {
-    border-bottom: 3px solid var(--sd-gold) !important;
+.badge-status-verified {
+    background: var(--sd-success-bg);
+    color: var(--sd-success);
+    font-weight: 600;
 }
 
-.gold-border-left {
-    border-left: 4px solid var(--sd-gold) !important;
+.badge-status-cancelled {
+    background: var(--sd-danger-bg);
+    color: var(--sd-danger);
+    font-weight: 600;
 }
 
-/* Custom Badges for Categories */
 .badge-category-healing {
-    background-color: #2a9d8f;
-    color: white;
+    background: #ECFDF5;
+    color: #047857;
 }
 
 .badge-category-thanksgiving {
-    background-color: #e9c46a;
-    color: #333;
+    background: #EFF6FF;
+    color: #1D4ED8;
 }
 
 .badge-category-eternal {
-    background-color: #6c757d;
-    color: white;
+    background: #F1F5F9;
+    color: #334155;
 }
 
 .badge-category-other {
-    background-color: var(--sd-purple-accent);
-    color: white;
+    background: var(--sd-gold-50);
+    color: var(--sd-gold);
 }
+
+/* ---------- Misc ---------- */
+.text-gold {
+    color: var(--sd-gold) !important;
+}
+
+.text-navy {
+    color: var(--sd-navy) !important;
+}
+
+.bg-navy {
+    background: var(--sd-navy) !important;
+}
+
+.bg-soft {
+    background: var(--sd-bg) !important;
+}
+
+.divider-gold {
+    height: 3px;
+    width: 56px;
+    background: linear-gradient(90deg, var(--sd-gold-light), var(--sd-gold));
+    border-radius: 999px;
+}
+
+.hero-glow {
+    background: radial-gradient(600px 300px at 10% -10%, rgba(217,119,6,.12), transparent 60%), radial-gradient(600px 300px at 90% -10%, rgba(15,23,42,.10), transparent 60%);
+}
+
+.fade-up {
+    animation: sdFadeUp .5s ease both;
+}
+
+@keyframes sdFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---------- Accessible table ---------- */
+.table-sd thead th {
+    background: var(--sd-bg);
+    color: var(--sd-slate);
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    border-bottom: 1px solid var(--sd-border);
+    padding: .9rem 1rem;
+}
+
+.table-sd tbody td {
+    padding: .9rem 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--sd-border);
+}
+
+.table-sd tbody tr {
+    transition: background .15s ease;
+}
+
+    .table-sd tbody tr:hover {
+        background: var(--sd-bg);
+    }
+
+/* ---------- Skip link (a11y) ---------- */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--sd-navy);
+    color: #fff;
+    padding: .6rem 1rem;
+    z-index: 2000;
+    border-radius: 0 0 .5rem 0;
+}
+
+    .skip-link:focus {
+        left: 0;
+    }

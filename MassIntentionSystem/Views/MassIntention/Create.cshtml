@@ -5,76 +5,368 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4">
-                    <h3 class="card-title text-center mb-4 fw-bold text-primary">✍️ Form para sa Alay na Misa</h3>
+<div class="hero-glow py-5">
+    <div class="container">
+        <div class="text-center mb-4 fade-up">
+            <span class="badge rounded-pill px-3 py-2" style="background:var(--sd-gold-50); color:var(--sd-gold);">
+                <i class="bi bi-candle me-1"></i> Alay na Misa
+            </span>
+            <h1 class="font-display fw-bold text-navy mt-3">Mag-request ng Mass Intention</h1>
+            <div class="divider-gold mx-auto my-3"></div>
+            <p class="text-muted">Punan ang form sa ibaba. Makakatanggap ka ng Reference Code pagkatapos i-submit.</p>
+        </div>
 
-                    @if (ViewBag.Error != null)
-                    {
-                        <div class="alert alert-danger">@ViewBag.Error</div>
-                    }
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
 
-                    <form asp-controller="MassIntention" asp-action="Create" method="post">
-                        <!-- 1. Petsa at Oras -->
-                        <h5 class="text-secondary border-bottom pb-2">1. Petsa at Oras ng Misa</h5>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label asp-for="MassDate" class="form-label fw-bold">Petsa (Mass Date)</label>
-                                <input asp-for="MassDate" type="date" class="form-control" required />
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger rounded-2xl border-0 shadow-soft d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-exclamation-triangle-fill"></i> <span>@ViewBag.Error</span>
+                    </div>
+                }
+
+                <form asp-controller="MassIntention" asp-action="Create" method="post" enctype="multipart/form-data" id="intentionForm" class="sd-card shadow-lg-sd p-4 p-md-5 fade-up">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Step 1: Date & Time Options -->
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-2xl fw-bold" style="width:28px;height:28px;background:var(--sd-navy);color:#fff;font-size:.8rem;">1</span>
+                        <h6 class="fw-bold text-navy m-0">Petsa at Oras ng Misa</h6>
+                    </div>
+
+                    <!-- Mode Switcher -->
+                    <div class="btn-group w-100 mb-3" role="group">
+                        <input type="radio" class="btn-check" name="dateMode" id="modeSingle" value="single" checked onchange="toggleDateMode()">
+                        <label class="btn btn-outline-primary fw-semibold" for="modeSingle"><i class="bi bi-calendar-check me-1"></i> Isang Petsa Lamang</label>
+
+                        <input type="radio" class="btn-check" name="dateMode" id="modeRange" value="range" onchange="toggleDateMode()">
+                        <label class="btn btn-outline-primary fw-semibold" for="modeRange"><i class="bi bi-calendar-range me-1"></i> Ilang Araw / Date Range</label>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6" id="startDateCol">
+                            <div class="sd-field">
+                                <i class="bi bi-calendar-event sd-icon"></i>
+                                <input asp-for="MassDate" id="startDate" type="date" class="form-control" value="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" placeholder=" " required />
+                                <label asp-for="MassDate" id="startDateLabel">Petsa (Mass Date)</label>
                             </div>
-                            <div class="col-md-6">
-                                <label asp-for="MassTime" class="form-label fw-bold">Oras (Mass Time)</label>
-                                <select asp-for="MassTime" class="form-select" required>
-                                    <option value="06:00 AM">06:00 AM</option>
-                                    <option value="07:00 AM">07:00 AM</option>
-                                    <option value="12:00 PM">12:00 PM</option>
-                                    <option value="06:00 PM">06:00 PM</option>
+                        </div>
+                        <div class="col-md-6 d-none" id="endDateCol">
+                            <div class="sd-field">
+                                <i class="bi bi-calendar-plus sd-icon"></i>
+                                <input type="date" name="endDate" id="endDate" class="form-control" placeholder=" " value="@DateTime.Today.AddDays(7).ToString("yyyy-MM-dd")" />
+                                <label>Hanggang Petsa (End Date)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4 align-items-center">
+                        <div class="col-md-7" id="timeSelectCol">
+                            <div class="sd-field">
+                                <i class="bi bi-clock sd-icon"></i>
+                                <select name="rawMassTime" id="massTimeSelect" class="form-select" required>
+                                    <option value="06:00:00">06:00 AM</option>
+                                    <option value="07:30:00">07:30 AM</option>
+                                    <option value="09:00:00">09:00 AM</option>
+                                    <option value="10:30:00">10:30 AM</option>
+                                    <option value="12:00:00">12:00 PM (Noon Mass)</option>
+                                    <option value="16:00:00">04:00 PM</option>
+                                    <option value="17:30:00">05:30 PM</option>
+                                    <option value="19:00:00">07:00 PM</option>
                                 </select>
+                                <label>Oras (Mass Time)</label>
                             </div>
                         </div>
-
-                        <!-- 2. Kategorya at Pangalan -->
-                        <h5 class="text-secondary border-bottom pb-2 mt-4">2. Kategorya at mga Pangalan</h5>
-                        <div class="mb-3">
-                            <label asp-for="Category" class="form-label fw-bold">Uri ng Intention</label>
-                            <select asp-for="Category" class="form-select" required>
-                                <option value="Healing & Good Health">Healing & Good Health</option>
-                                <option value="Thanksgiving">Thanksgiving</option>
-                                <option value="Soul / Deceased">Soul / Deceased</option>
-                                <option value="Special Intention">Special Intention</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label asp-for="OfferingNames" class="form-label fw-bold">Mga Pangalan na Ipagdarasal</label>
-                            <textarea asp-for="OfferingNames" class="form-control" rows="3" placeholder="I-type dito ang mga pangalan..." required></textarea>
-                        </div>
-
-                        <!-- 3. Information -->
-                        <h5 class="text-secondary border-bottom pb-2 mt-4">3. Impormasyon ng Nag-request</h5>
-                        <div class="mb-3">
-                            <label asp-for="RequestorName" class="form-label fw-bold">Pangalan Mo (Requestor Name)</label>
-                            <input asp-for="RequestorName" class="form-control" placeholder="Juan Dela Cruz" required />
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label asp-for="ContactNumber" class="form-label fw-bold">Contact Number</label>
-                                <input asp-for="ContactNumber" class="form-control" placeholder="09123456789" required />
-                            </div>
-                            <div class="col-md-6">
-                                <label asp-for="RequestorEmail" class="form-label fw-bold">Email Address</label>
-                                <input asp-for="RequestorEmail" type="email" class="form-control" placeholder="juan@gmail.com" />
+                        <div class="col-md-5">
+                            <div class="form-check form-switch ps-4">
+                                <input class="form-check-input" type="checkbox" id="allMassesOfDay" name="allMassesOfDay" value="true" onchange="toggleAllMasses()">
+                                <label class="form-check-label fw-semibold text-navy small" for="allMassesOfDay">
+                                    Lahat ng Oras sa Araw/Mga Araw na ito
+                                </label>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">🚀 I-submit ang Intention Request</button>
+                    <!-- Step 2: Dynamic Intentions -->
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="d-flex align-items-center justify-content-center rounded-2xl fw-bold" style="width:28px;height:28px;background:var(--sd-navy);color:#fff;font-size:.8rem;">2</span>
+                            <h6 class="fw-bold text-navy m-0">Kategorya at mga Pangalan</h6>
                         </div>
-                    </form>
-                </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill" onclick="addIntentionGroup()">
+                            <i class="bi bi-plus-lg me-1"></i> Dagdag ng Intention
+                        </button>
+                    </div>
+
+                    <div id="intentionGroupsContainer">
+                        <div class="intention-group p-3 mb-3 rounded-3 style-card-item border">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold text-navy small group-number">Intention #1</span>
+                                <button type="button" class="btn btn-sm text-danger btn-remove-group d-none" onclick="removeIntentionGroup(this)">
+                                    <i class="bi bi-trash"></i> Alisin
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <div class="sd-field">
+                                    <i class="bi bi-tag sd-icon"></i>
+                                    <select name="categories" class="form-select category-select" onchange="renderChips()" required>
+                                        <option value="Healing">Healing & Good Health</option>
+                                        <option value="Thanksgiving">Thanksgiving</option>
+                                        <option value="EternalRepose">Eternal Repose (Yumao)</option>
+                                        <option value="Other">Special Intention / Other</option>
+                                    </select>
+                                    <label>Uri ng Intention</label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="sd-field sd-field-noicon">
+                                    <textarea name="offeringNamesList" class="form-control offering-names" rows="3" placeholder=" " oninput="renderChips()" required></textarea>
+                                    <label>Mga Pangalan na Ipagdarasal (isa bawat linya)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live chip preview -->
+                    <div class="p-3 rounded-2xl mb-4" style="background:var(--sd-bg); border:1px dashed var(--sd-border);">
+                        <small class="fw-bold text-uppercase text-muted d-block mb-2" style="font-size:.7rem; letter-spacing:.04em;">
+                            <i class="bi bi-eye me-1"></i> Live Preview
+                        </small>
+                        <div id="chipPreview" class="d-flex flex-wrap gap-2">
+                            <span class="text-muted small fst-italic">Lalabas dito ang mga pangalan habang nagta-type ka...</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Requestor Info -->
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-2xl fw-bold" style="width:28px;height:28px;background:var(--sd-navy);color:#fff;font-size:.8rem;">3</span>
+                        <h6 class="fw-bold text-navy m-0">Impormasyon ng Nag-request</h6>
+                    </div>
+                    <div class="mb-3">
+                        <div class="sd-field">
+                            <i class="bi bi-person sd-icon"></i>
+                            <input asp-for="RequestorName" class="form-control" placeholder=" " required />
+                            <label asp-for="RequestorName">Pangalan Mo (Requestor Name)</label>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="sd-field">
+                                <i class="bi bi-telephone sd-icon"></i>
+                                <input asp-for="ContactNumber" class="form-control" placeholder=" " required />
+                                <label asp-for="ContactNumber">Contact Number</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="sd-field">
+                                <i class="bi bi-envelope sd-icon"></i>
+                                <input asp-for="RequestorEmail" type="email" class="form-control" placeholder=" " />
+                                <label asp-for="RequestorEmail">Email Address (optional)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Bayad (Offering / Stipend) -->
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-2xl fw-bold" style="width:28px;height:28px;background:var(--sd-navy);color:#fff;font-size:.8rem;">4</span>
+                        <h6 class="fw-bold text-navy m-0">Bayad (Offering / Stipend)</h6>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <div class="sd-field">
+                                <i class="bi bi-cash-coin sd-icon"></i>
+                                <input type="number" name="amount" class="form-control" placeholder=" " value="100.00" step="any" min="0" required />
+                                <label>Halaga (₱)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="sd-field">
+                                <i class="bi bi-wallet2 sd-icon"></i>
+                                <select name="paymentMethod" id="paymentMethodSelect" class="form-select" onchange="updatePaymentDetails()" required>
+                                    <option value="GCash">GCash</option>
+                                    <option value="Maya">Maya</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                </select>
+                                <label>Paraan ng Bayad</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold text-muted">Patunay ng Bayad (Screenshot)</label>
+                            <input type="file" name="paymentProof" class="form-control rounded-xl" accept="image/*" />
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Payment Display Card -->
+                    <div id="paymentDetailsCard" class="card border-0 bg-light p-3 mb-4 rounded-3 text-center">
+                        <h6 id="paymentTitle" class="fw-bold text-navy mb-2">
+                            <i class="bi bi-qr-code-scan me-1"></i> GCash Payment Details
+                        </h6>
+                        <div class="d-flex flex-column align-items-center justify-content-center">
+                            <img id="paymentQrImg" src="/images/gcash-qr.png" alt="QR Code" class="img-fluid rounded mb-2 shadow-sm" style="max-width: 180px; display: none;" onerror="this.style.display='none'" />
+
+                            <div class="p-2 bg-white rounded border w-100 text-center">
+                                <small class="text-muted d-block">Account Name:</small>
+                                <strong id="paymentAccountName" class="text-dark">La Naval de Manila Parish</strong>
+
+                                <small class="text-muted d-block mt-2">Account Number / Mobile:</small>
+                                <span id="paymentAccountNumber" class="fw-bold fs-5 text-primary">0917-123-4567</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="small text-muted mb-4">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Mananatiling <strong>"Pending"</strong> ang iyong request hanggang ma-verify ng parish office ang bayad.
+                    </p>
+
+                    <button type="submit" class="btn btn-sd-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-send-check"></i> I-submit ang Intention Request
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const paymentAccounts = {
+            GCash: {
+                title: "GCash Payment Details",
+                name: "La Naval de Manila Parish",
+                number: "0917-123-4567",
+                qrSrc: "/images/gcash-qr.png"
+            },
+            Maya: {
+                title: "Maya / PayMaya Payment Details",
+                name: "La Naval de Manila Parish",
+                number: "0918-987-6543",
+                qrSrc: "/images/maya-qr.png"
+            },
+            "Bank Transfer": {
+                title: "Bank Transfer (BDO / BPI)",
+                name: "Santo Domingo Church Parish Inc.",
+                number: "BDO: 0012-3456-7890 | BPI: 1234-5678-90",
+                qrSrc: "/images/bank-qr.png"
+            }
+        };
+
+        function updatePaymentDetails() {
+            const selectedMethod = document.getElementById('paymentMethodSelect').value;
+            const details = paymentAccounts[selectedMethod] || paymentAccounts["GCash"];
+
+            document.getElementById('paymentTitle').innerHTML = `<i class="bi bi-qr-code-scan me-1"></i> ${details.title}`;
+            document.getElementById('paymentAccountName').innerText = details.name;
+            document.getElementById('paymentAccountNumber').innerText = details.number;
+
+            const qrImg = document.getElementById('paymentQrImg');
+            qrImg.src = details.qrSrc;
+            qrImg.style.display = 'block';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            updatePaymentDetails();
+            toggleDateMode();
+        });
+
+        function toggleDateMode() {
+            const isRange = document.getElementById('modeRange').checked;
+            const endDateCol = document.getElementById('endDateCol');
+            const startDateLabel = document.getElementById('startDateLabel');
+
+            if (isRange) {
+                endDateCol.classList.remove('d-none');
+                startDateLabel.innerText = "Simulang Petsa (Start Date)";
+            } else {
+                endDateCol.classList.add('d-none');
+                startDateLabel.innerText = "Petsa (Mass Date)";
+            }
+        }
+
+        function toggleAllMasses() {
+            const isAll = document.getElementById('allMassesOfDay').checked;
+            const timeSelect = document.getElementById('massTimeSelect');
+            timeSelect.disabled = isAll;
+        }
+
+        function addIntentionGroup() {
+            const container = document.getElementById('intentionGroupsContainer');
+            const firstGroup = container.querySelector('.intention-group');
+            const newGroup = firstGroup.cloneNode(true);
+
+            newGroup.querySelector('textarea').value = '';
+            newGroup.querySelector('select').selectedIndex = 0;
+
+            container.appendChild(newGroup);
+            updateGroupNumbers();
+            renderChips();
+        }
+
+        function removeIntentionGroup(btn) {
+            const group = btn.closest('.intention-group');
+            group.remove();
+            updateGroupNumbers();
+            renderChips();
+        }
+
+        function updateGroupNumbers() {
+            const groups = document.querySelectorAll('.intention-group');
+            groups.forEach((group, idx) => {
+                group.querySelector('.group-number').innerText = `Intention #${idx + 1}`;
+                const removeBtn = group.querySelector('.btn-remove-group');
+                if (groups.length > 1) {
+                    removeBtn.classList.remove('d-none');
+                } else {
+                    removeBtn.classList.add('d-none');
+                }
+            });
+        }
+
+        function renderChips() {
+            const preview = document.getElementById('chipPreview');
+            const groups = document.querySelectorAll('.intention-group');
+
+            const chipClass = {
+                Healing: 'chip-healing',
+                Thanksgiving: 'chip-thanksgiving',
+                EternalRepose: 'chip-eternal',
+                Other: 'chip-other'
+            };
+            const chipIcon = {
+                Healing: 'bi-heart-pulse',
+                Thanksgiving: 'bi-stars',
+                EternalRepose: 'bi-flower1',
+                Other: 'bi-bookmark'
+            };
+
+            let html = '';
+
+            groups.forEach(group => {
+                const cat = group.querySelector('.category-select').value;
+                const textarea = group.querySelector('.offering-names');
+                const names = textarea.value.split(/\r?\n/).map(n => n.trim()).filter(Boolean);
+
+                names.forEach(n => {
+                    html += `
+                        <span class="chip ${chipClass[cat] || 'chip-other'}">
+                            <i class="bi ${chipIcon[cat] || 'bi-bookmark'}"></i> ${escapeHtml(n)} (${cat})
+                        </span>
+                    `;
+                });
+            });
+
+            if (!html) {
+                preview.innerHTML = '<span class="text-muted small fst-italic">Lalabas dito ang mga pangalan habang nagta-type ka...</span>';
+            } else {
+                preview.innerHTML = html;
+            }
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    </script>
+}

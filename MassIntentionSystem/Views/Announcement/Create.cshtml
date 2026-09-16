@@ -4,43 +4,41 @@
     ViewData["Title"] = "Bagong Anunsyo";
 }
 
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white pt-4 pb-3">
-                    <h4 class="fw-bold m-0" style="color: #4a154b;">Mag-post ng Bagong Anunsyo</h4>
-                </div>
-                <div class="card-body p-4">
-
-                    <form asp-controller="Announcement" asp-action="Create" method="post">
-                        @Html.AntiForgeryToken()
-
-                        <div class="mb-3">
-                            <label asp-for="Title" class="form-label fw-semibold">Pamagat ng Anunsyo</label>
-                            <input asp-for="Title" class="form-control" placeholder="Halimbawa: Misa para sa Fiesta ng La Naval" required />
-                            <span asp-validation-for="Title" class="text-danger small"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Content" class="form-label fw-semibold">Nilalaman (Content)</label>
-                            <textarea asp-for="Content" class="form-control" rows="6" placeholder="Isulat dito ang buong detalye ng anunsyo..." required></textarea>
-                            <span asp-validation-for="Content" class="text-danger small"></span>
-                        </div>
-
-                        <div class="form-check form-switch mb-4">
-                            <input asp-for="IsActive" class="form-check-input" type="checkbox" checked />
-                            <label asp-for="IsActive" class="form-check-label fw-semibold">I-publish agad sa Public Website</label>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a asp-action="Index" class="btn btn-outline-secondary">Kanselahin</a>
-                            <button type="submit" class="btn btn-violet fw-bold px-4">I-Save ang Anunsyo</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
+<div class="row justify-content-center fade-up">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="fw-bold font-display text-navy m-0">Mag-post ng Bagong Anunsyo</h4>
+            <a asp-action="Index" class="btn btn-sd-outline btn-sm"><i class="bi bi-arrow-left me-1"></i> Bumalik</a>
         </div>
+
+        <form asp-controller="Announcement" asp-action="Create" method="post" class="sd-card shadow-md-sd p-4">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <div class="sd-field sd-field-noicon">
+                    <input asp-for="Title" class="form-control" placeholder=" " required />
+                    <label asp-for="Title">Pamagat ng Anunsyo</label>
+                </div>
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <div class="sd-field sd-field-noicon">
+                    <textarea asp-for="Content" class="form-control" rows="6" placeholder=" " required></textarea>
+                    <label asp-for="Content">Nilalaman (Content)</label>
+                </div>
+                <span asp-validation-for="Content" class="text-danger small"></span>
+            </div>
+
+            <div class="form-check form-switch p-3 rounded-2xl mb-4" style="background:var(--sd-bg);">
+                <input asp-for="IsActive" class="form-check-input" type="checkbox" checked />
+                <label asp-for="IsActive" class="form-check-label fw-semibold">I-publish agad sa Public Website</label>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-action="Index" class="btn btn-sd-outline">Kanselahin</a>
+                <button type="submit" class="btn btn-sd-primary px-4"><i class="bi bi-save me-1"></i> I-save ang Anunsyo</button>
+            </div>
+        </form>
     </div>
 </div>

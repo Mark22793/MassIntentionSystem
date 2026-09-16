@@ -4,41 +4,59 @@
     ViewData["Title"] = "Talaan ng mga Pari";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4 fade-up">
     <div>
-        <h3 class="fw-bold m-0" style="color: #4a154b;">⛪ Talaan ng mga Pari / Celebrants</h3>
+        <h3 class="fw-bold font-display text-navy m-0"><i class="bi bi-person-badge text-gold me-2"></i>Talaan ng mga Pari / Celebrants</h3>
         <p class="text-muted small mb-0">Pamahalaan ang mga Pari na nagmimisa sa Santo Domingo Church.</p>
     </div>
-    <a asp-action="Create" class="btn btn-violet fw-bold">➕ Magdagdag ng Pari</a>
+    <a asp-action="Create" class="btn btn-sd-primary"><i class="bi bi-plus-circle me-1"></i> Magdagdag ng Pari</a>
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-            <thead class="bg-light">
+<div class="sd-card shadow-soft fade-up">
+    <div class="table-responsive">
+        <table class="table table-sd table-hover mb-0">
+            <thead>
                 <tr>
-                    <th>Pangalan (Name & Title)</th>
+                    <th class="ps-4">Pangalan (Name & Title)</th>
                     <th>Email / Contact</th>
                     <th>Status</th>
                     <th class="text-center">Aksyon</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var priest in Model)
+                @if (!Model.Any())
                 {
-                    <tr>
-                        <td><strong>@priest.Name</strong></td>
-                        <td>@priest.Email</td>
-                        <td>
-                            <span class="badge @(priest.IsActive ? "bg-success" : "bg-secondary")">
-                                @(priest.IsActive ? "Active" : "Inactive")
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <a asp-action="Edit" asp-route-id="@priest.Id" class="btn btn-sm btn-outline-warning">✏️ Edit</a>
-                            <a asp-action="Details" asp-route-id="@priest.Id" class="btn btn-sm btn-outline-info">👁️ Detalye</a>
-                        </td>
-                    </tr>
+                    <tr><td colspan="4" class="text-center py-5 text-muted">
+                        <i class="bi bi-person-x fs-1 d-block mb-2 text-secondary"></i>
+                        Wala pang naitalang pari.
+                    </td></tr>
+                }
+                else
+                {
+                    @foreach (var priest in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="d-flex align-items-center justify-content-center rounded-2xl" style="width:36px;height:36px;background:var(--sd-gold-50);">
+                                        <i class="bi bi-person-vcard text-gold"></i>
+                                    </span>
+                                    <strong class="text-navy">@priest.Name</strong>
+                                </div>
+                            </td>
+                            <td class="text-muted">@(string.IsNullOrEmpty(priest.Email) ? "—" : priest.Email)</td>
+                            <td>
+                                @if (priest.IsActive)
+                                { <span class="badge badge-status-verified rounded-pill px-3 py-2">Active</span> }
+                                else
+                                { <span class="badge bg-light text-dark border rounded-pill px-3 py-2">Inactive</span> }
+                            </td>
+                            <td class="text-center pe-4">
+                                <a asp-action="Edit" asp-route-id="@priest.Id" class="btn btn-sm btn-sd-outline me-1"><i class="bi bi-pencil"></i> Edit</a>
+                                <a asp-action="Details" asp-route-id="@priest.Id" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i> Detalye</a>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>

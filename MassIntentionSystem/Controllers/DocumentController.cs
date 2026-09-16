@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MassIntentionSystem.Data;
@@ -27,21 +31,48 @@ namespace MassIntentionSystem.Controllers
         // POST: /Document/GenerateDoc
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GenerateDoc(DateTime massDate, TimeSpan massTime, int priestId)
+        public async Task<IActionResult> GenerateDoc(DateTime massDate, List<string> selectedTimes, List<int> priestIds)
         {
-            if (priestId == 0)
+            if (selectedTimes == null || !selectedTimes.Any())
             {
-                ModelState.AddModelError("", "Paki-pili ang Paring magmisa.");
+                ModelState.AddModelError("", "Paki-check ng kahit isang Oras ng Misa.");
                 ViewBag.Priests = new SelectList(await _context.Priests.Where(p => p.IsActive).ToListAsync(), "Id", "Name");
                 return View("Index");
             }
 
-            // Tawagin ang Service para i-build ang Word document file
-            byte[] fileBytes = await _documentService.GenerateMassIntentionDocAsync(massDate, massTime, priestId);
+            var scheduleMap = new Dictionary<TimeSpan, int>();
+            var allTimes = new List<string> { "06:00:00", "07:30:00", "09:00:00", "10:30:00", "12:00:00", "16:00:00", "17:30:00", "19:00:00" };
 
-            string fileName = $"Mass_Intentions_{massDate:yyyyMMdd}_{massTime.Hours:D2}{massTime.Minutes:D2}.doc";
+            for (int i = 0; i < allTimes.Count; i++)
+            {
+                string timeStr = allTimes[i];
+                if (selectedTimes.Contains(timeStr))
+                {
+                    TimeSpan ts = TimeSpan.Parse(timeStr);
+                    int pId = (priestIds != null && priestIds.Count > i) ? priestIds[i] : 0;
+                    scheduleMap[ts] = pId;
+                }
+            }
+
+            byte[] fileBytes = await _documentService.GenerateMultiTimeMassDocAsync(massDate, scheduleMap);
+            string fileName = $"Mass_Intentions_{massDate:yyyyMMdd}.doc";
 
             return File(fileBytes, "application/msword", fileName);
+        }
+
+        // GET: /Document/History
+        public async Task<IActionResult> History(DateTime? filterDate)
+        {
+            var dateToQuery = filterDate ?? DateTime.Today;
+
+            var printedIntentions = await _context.MassIntentions
+                .Where(m => m.IsPrinted && m.MassDate.Date == dateToQuery.Date)
+                .OrderByDescending(m => m.PrintedAt)
+                .ThenBy(m => m.MassTime)
+                .ToListAsync();
+
+            ViewBag.SelectedDate = dateToQuery.ToString("yyyy-MM-dd");
+            return View(printedIntentions);
         }
     }
 }

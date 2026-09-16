@@ -1,38 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MassIntentionSystem.Data;
 
 namespace MassIntentionSystem.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private const string HARDCODED_USER = "admin";
+        private const string HARDCODED_PASS = "AdminPassword123!";
 
-        public AccountController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        public IActionResult Login() => View();
 
-        // GET: /Account/Login
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        // POST: /Account/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string username, string password)
+        public IActionResult Login(string username, string password)
         {
-            var admin = await _context.Admins
-                .FirstOrDefaultAsync(a => a.Username == username && a.PasswordHash == password);
-
-            if (admin != null)
+            if (username?.Trim().ToLower() == HARDCODED_USER && password == HARDCODED_PASS)
             {
-                // Simple Session-based Login setup
-                HttpContext.Session.SetString("AdminUser", admin.Username);
-                HttpContext.Session.SetString("AdminRole", admin.Role);
-
+                HttpContext.Session.SetString("AdminUser", "admin");
+                HttpContext.Session.SetString("AdminRole", "SuperAdmin");
                 return RedirectToAction("Index", "Dashboard");
             }
 
@@ -40,7 +24,6 @@ namespace MassIntentionSystem.Controllers
             return View();
         }
 
-        // GET: /Account/Logout
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();

@@ -1,0 +1,75 @@
+﻿@model IEnumerable<MassIntentionSystem.Models.MassIntention>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Printed Mass Intentions History";
+}
+
+<div class="container py-4">
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h4 class="fw-bold m-0 text-navy">
+                <i class="bi bi-clock-history text-secondary me-2"></i>Exported/Printed Intentions History
+            </h4>
+        </div>
+        <div class="card-body">
+            <!-- Filter Option -->
+            <form method="get" asp-action="History" class="row g-3 align-items-center mb-4">
+                <div class="col-auto">
+                    <label class="col-form-label fw-bold">Pumili ng Petsa:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="date" name="filterDate" class="form-control" value="@ViewBag.SelectedDate" />
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search me-1"></i> Filter
+                    </button>
+                </div>
+            </form>
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center py-4">
+                    <i class="bi bi-info-circle display-6 d-block mb-2"></i>
+                    Walang nahanap na printed mass intentions para sa petsang ito.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Category</th>
+                                <th>Offering Names</th>
+                                <th>Mass Time</th>
+                                <th>Payment Status</th>
+                                <th>Date Printed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-secondary">@item.Category</span>
+                                    </td>
+                                    <td>@item.OfferingNames</td>
+                                    <td class="fw-bold">
+                                        @DateTime.Today.Add(item.MassTime).ToString("hh:mm tt")
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success">@item.PaymentStatus</span>
+                                    </td>
+                                    <td class="small text-muted">
+                                        @(item.PrintedAt.HasValue ? item.PrintedAt.Value.ToString("MMM dd, yyyy hh:mm tt") : "N/A")
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

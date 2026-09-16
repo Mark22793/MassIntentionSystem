@@ -22,10 +22,16 @@ namespace MassIntentionSystem.Controllers
         // GET: /Report/Intentions
         public async Task<IActionResult> Intentions(DateTime? startDate, DateTime? endDate)
         {
-            var query = _context.MassIntentions.AsQueryable();
+            var query = _context.MassIntentions
+                .Include(i => i.Payment)
+                .Include(i => i.MassSchedule)
+                .AsQueryable();
 
-            if (startDate.HasValue) query = query.Where(i => i.MassDate >= startDate.Value);
-            if (endDate.HasValue) query = query.Where(i => i.MassDate <= endDate.Value);
+            if (startDate.HasValue)
+                query = query.Where(i => i.MassDate >= startDate.Value);
+
+            if (endDate.HasValue)
+                query = query.Where(i => i.MassDate <= endDate.Value);
 
             var list = await query.OrderByDescending(i => i.MassDate).ToListAsync();
             return View(list);
@@ -35,7 +41,8 @@ namespace MassIntentionSystem.Controllers
         public async Task<IActionResult> Payments()
         {
             var payments = await _context.Payments
-                .Where(p => p.Status == "Approved")
+                .Include(p => p.MassIntention)
+                .Where(p => p.Status == "Approved" || p.Status == "Verified")
                 .OrderByDescending(p => p.PaymentDate)
                 .ToListAsync();
 

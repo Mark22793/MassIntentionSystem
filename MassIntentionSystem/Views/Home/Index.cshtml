@@ -3,29 +3,83 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="p-5 mb-4 bg-light rounded-3 shadow-sm border mt-3">
-    <div class="container-fluid py-3">
-        <h1 class="display-5 fw-bold text-primary">National Shrine of Our Lady of La Naval de Manila</h1>
-        <p class="fs-5 text-muted">Santo Domingo Church, Quezon City</p>
-        <p class="col-md-10 fs-6">
-            Mag-alay ng Misa para sa Kagalingan, Pasasalamat, o sa Alaala ng mga Sumakabilang-Buhay.
-        </p>
-        <div class="d-flex gap-2 mt-4">
-            <a class="btn btn-primary btn-lg" asp-controller="MassIntention" asp-action="Create">
-                <i class="bi bi-pencil-square"></i> Mag-Request ng Mass Intention
-            </a>
-            <a class="btn btn-outline-secondary btn-lg" asp-controller="MassIntention" asp-action="Track">
-                <i class="bi bi-search"></i> I-track ang Request
-            </a>
+<!-- Hero -->
+<div class="hero-glow">
+    <div class="container py-5">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7 fade-up">
+                <span class="badge rounded-pill px-3 py-2 mb-3" style="background:var(--sd-gold-50); color:var(--sd-gold);">
+                    <i class="bi bi-heart me-1"></i> Alay na Misa Para sa Iyong Mahal sa Buhay
+                </span>
+                <h1 class="font-display fw-bold text-navy" style="font-size:2.6rem; line-height:1.15;">
+                    National Shrine of Our Lady of La Naval de Manila
+                </h1>
+                <p class="text-muted fs-5 mt-2">Santo Domingo Church, Quezon City</p>
+                <p class="fs-6 text-muted" style="max-width:560px;">
+                    Mag-alay ng Misa para sa Kagalingan, Pasasalamat, o sa Alaala ng mga Sumakabilang-Buhay.
+                    Simple, mabilis, at maaasahan.
+                </p>
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <a class="btn btn-sd-primary btn-lg" asp-controller="MassIntention" asp-action="Create">
+                        <i class="bi bi-pencil-square me-1"></i> Mag-request ng Mass Intention
+                    </a>
+                    <a class="btn btn-sd-outline btn-lg" asp-controller="MassIntention" asp-action="Track">
+                        <i class="bi bi-search me-1"></i> I-track ang Request
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 fade-up">
+                <div class="sd-card p-4 shadow-lg-sd">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="d-flex align-items-center justify-content-center rounded-2xl" style="width:48px;height:48px;background:var(--sd-gold-50);">
+                            <i class="bi bi-clock-history text-gold fs-4"></i>
+                        </span>
+                        <div>
+                            <div class="fw-bold text-navy">Karaniwang Oras ng Misa</div>
+                            <small class="text-muted">Lunes &ndash; Linggo</small>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between border-top pt-3">
+                        <span class="text-muted small">6:00 AM &ndash; 7:00 PM</span>
+                        <a asp-controller="Home" asp-action="MassSchedule" class="small fw-semibold text-gold text-decoration-none">
+                            Tingnan ang Buong Schedule <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-dark text-white">
-        <h4 class="mb-0"><i class="bi bi-megaphone"></i> Mga Anunsyo ng Parokya</h4>
-    </div>
-    <div class="card-body">
-        <p class="card-text text-muted">Walang bagong anunsyo ngayong araw.</p>
+<!-- Announcements preview -->
+<div class="container mt-2 mb-5">
+    <div class="sd-card shadow-soft fade-up">
+        <div class="d-flex justify-content-between align-items-center p-4 pb-3 border-bottom">
+            <h4 class="fw-bold text-navy m-0"><i class="bi bi-megaphone text-gold me-2"></i>Mga Anunsyo ng Parokya</h4>
+            <a asp-controller="Home" asp-action="Announcements" class="btn btn-sd-outline btn-sm">Tingnan Lahat</a>
+        </div>
+        <div class="p-4">
+            @if (ViewBag.Announcements == null || ((IEnumerable<dynamic>)ViewBag.Announcements).Count() == 0)
+            {
+                <p class="text-muted text-center py-3 mb-0">Walang bagong anunsyo ngayong araw.</p>
+            }
+            else
+            {
+                <div class="row g-3">
+                    @foreach (var a in ViewBag.Announcements)
+                    {
+                        <div class="col-md-4">
+                            <div class="rounded-2xl p-3 h-100" style="background:var(--sd-bg); border:1px solid var(--sd-border);">
+                                <small class="text-gold fw-bold text-uppercase" style="font-size:.7rem; letter-spacing:.04em;">
+                                    @a.DatePosted.ToString("MMM dd, yyyy")
+                                </small>
+                                <h6 class="fw-bold text-navy mt-1">@a.Title</h6>
+                                <p class="small text-muted mb-0 text-truncate">@a.Content</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
     </div>
 </div>

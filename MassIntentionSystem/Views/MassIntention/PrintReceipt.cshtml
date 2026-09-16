@@ -1,7 +1,7 @@
 ﻿@model MassIntentionSystem.Models.MassIntention
 @{
     Layout = null;
-    
+
     decimal finalAmount = 0;
     if (Model.Payment != null && Model.Payment.Amount > 0)
     {
@@ -12,99 +12,145 @@
         decimal.TryParse(TempData["PrintedAmount"].ToString(), out finalAmount);
     }
 
-    // Formatting para sa TimeSpan papuntang 12-hour format (e.g., 06:00 AM)
     string formattedTime = DateTime.Today.Add(Model.MassTime).ToString("hh:mm tt");
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Official Receipt - @Model.ReferenceNo</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
-        body { background-color: #ffffff; font-family: Arial, sans-serif; }
-        .receipt-card { max-width: 650px; margin: 20px auto; border: 2px dashed #333; padding: 30px; }
+        body { background: var(--sd-bg, #f8fafc); font-family: 'Inter', Arial, sans-serif; }
+
+        /* Screen preview (A4-ish card) */
+        .receipt-shell { max-width: 720px; margin: 24px auto; }
+        .receipt-card {
+            background: #fff; border-radius: 1.25rem; padding: 2.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0;
+        }
+        .toolbar { max-width: 720px; margin: 0 auto 16px; }
+
+        /* 80mm thermal print target */
+        #thermal-receipt { display: none; }
+
         @@media print {
             .no-print { display: none !important; }
-            .receipt-card { border: 1px solid #000; margin: 0 auto; width: 100%; box-shadow: none !important; }
+            body { background: #fff !important; }
+
+            /* Default: clean A4 summary print */
+            .receipt-shell { max-width: 100% !important; margin: 0 !important; }
+            .receipt-card { box-shadow: none !important; border: 1px solid #000 !important; border-radius: 0 !important; }
+
+            /* Thermal (80mm) mode — toggled by JS adding .thermal-mode to body */
+            body.thermal-mode .receipt-shell,
+            body.thermal-mode .receipt-card { display: none !important; }
+            body.thermal-mode #thermal-receipt { display: block !important; }
+
+            @@page { size: 80mm auto; margin: 4mm; }
+            body.thermal-mode #thermal-receipt {
+                width: 72mm; font-family: 'Courier New', monospace; font-size: 10.5px; color: #000;
+            }
+            body.thermal-mode #thermal-receipt .tr-center { text-align: center; }
+            body.thermal-mode #thermal-receipt .tr-line { border-top: 1px dashed #000; margin: 6px 0; }
+            body.thermal-mode #thermal-receipt .tr-row { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 2px; }
+            body.thermal-mode #thermal-receipt .tr-title { font-weight: bold; font-size: 12px; text-transform: uppercase; }
+            body.thermal-mode #thermal-receipt ul { margin: 2px 0 6px 12px; padding: 0; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="text-center my-3 no-print">
-        <button onclick="window.print()" class="btn btn-primary px-4 fw-bold">🖨️ Print Receipt</button>
-        <button onclick="window.close()" class="btn btn-secondary px-3">Isara</button>
+    <div class="toolbar no-print d-flex justify-content-center gap-2 my-3">
+        <button onclick="printAs('a4')" class="btn btn-navy"><i class="bi bi-file-earmark-text me-1"></i> Print A4 Summary</button>
+        <button onclick="printAs('thermal')" class="btn btn-warning fw-bold text-white"><i class="bi bi-receipt me-1"></i> Print 80mm Thermal</button>
+        <button onclick="window.close()" class="btn btn-outline-secondary"><i class="bi bi-x-lg me-1"></i> Isara</button>
     </div>
 
-    <div class="receipt-card bg-white shadow-sm rounded">
-        <div class="text-center border-bottom pb-3 mb-3">
-            <h4 class="fw-bold m-0 text-uppercase" style="color: #4a154b;">Santo Domingo Church</h4>
-            <p class="small text-muted m-0">National Shrine of Our Lady of the Holy Rosary La Naval de Manila</p>
-            <h5 class="fw-bold mt-3 text-primary">OFFICIAL RECEIPT (MASS INTENTION)</h5>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-6">
-                <small class="text-muted d-block">Reference Number:</small>
-                <strong class="fs-6 text-dark">@Model.ReferenceNo</strong>
+    <!-- Screen / A4 Printable Version -->
+    <div class="receipt-shell">
+        <div class="receipt-card">
+            <div class="text-center border-bottom pb-3 mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2"
+                     style="width:52px;height:52px;background:linear-gradient(135deg,#F59E0B,#D97706);">
+                    <i class="bi bi-church text-white fs-4"></i>
+                </div>
+                <h4 class="fw-bold text-uppercase m-0" style="color:#0F172A;">Santo Domingo Church</h4>
+                <p class="small text-muted m-0">National Shrine of Our Lady of the Holy Rosary La Naval de Manila</p>
+                <span class="badge bg-warning text-dark rounded-pill mt-2 px-3 py-2">
+                    Official Receipt &mdash; Mass Intention
+                </span>
             </div>
-            <div class="col-6 text-end">
-                <small class="text-muted d-block">Petsa ng Pag-encode:</small>
-                <strong>@Model.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")</strong>
+
+            <div class="row mb-3">
+                <div class="col-6">
+                    <small class="text-muted d-block">Reference Number</small>
+                    <strong class="fs-6 text-dark">@Model.ReferenceNo</strong>
+                </div>
+                <div class="col-6 text-end">
+                    <small class="text-muted d-block">Petsa ng Pag-encode</small>
+                    <strong>@Model.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")</strong>
+                </div>
             </div>
-        </div>
 
-        <table class="table table-bordered table-sm mb-3">
-            <tbody>
-                <tr>
-                    <th class="bg-light" style="width: 40%;">Nag-request (Client):</th>
-                    <td><strong>@Model.RequestorName</strong></td>
-                </tr>
-                <tr>
-                    <th class="bg-light">Contact Number:</th>
-                    <td>@(string.IsNullOrEmpty(Model.ContactNumber) ? "N/A" : Model.ContactNumber)</td>
-                </tr>
-                <tr>
-                    <th class="bg-light">Petsa at Oras ng Misa:</th>
-                    <td><strong>@Model.MassDate.ToString("MMMM dd, yyyy") (@formattedTime)</strong></td>
-                </tr>
-                <tr>
-                    <th class="bg-light">Kategorya ng Misa:</th>
-                    <td>@Model.Category</td>
-                </tr>
-                <tr>
-                    <th class="bg-light">Mga Pangalan (Offerings):</th>
-                    <td style="white-space: pre-line;">@Model.OfferingNames</td>
-                </tr>
-                <tr>
-                    <th class="bg-light">Halaga ng Bayad (Stipend):</th>
-                    <td>
-                        <strong class="text-success fs-5">
-                            ₱@finalAmount.ToString("N2")
-                        </strong>
-                    </td>
-                </tr>
-                <tr>
-                    <th class="bg-light">Status ng Alay:</th>
-                    <td><span class="badge bg-success">CONFIRMED / PAID</span></td>
-                </tr>
-            </tbody>
-        </table>
+            <div class="rounded overflow-hidden border">
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        <tr><th class="bg-light" style="width:40%;">Nag-request (Client)</th><td><strong>@Model.RequestorName</strong></td></tr>
+                        <tr><th class="bg-light">Contact Number</th><td>@(string.IsNullOrEmpty(Model.ContactNumber) ? "N/A" : Model.ContactNumber)</td></tr>
+                        <tr><th class="bg-light">Petsa at Oras ng Misa</th><td><strong>@Model.MassDate.ToString("MMMM dd, yyyy") (@formattedTime)</strong></td></tr>
+                        <tr><th class="bg-light">Kategorya ng Misa</th><td><span class="badge bg-info text-dark">@Model.Category</span></td></tr>
+                        <tr><th class="bg-light">Mga Pangalan (Offerings)</th><td style="white-space: pre-line;">@Model.OfferingNames</td></tr>
+                        <tr><th class="bg-light">Halaga ng Bayad (Stipend)</th><td><strong class="text-success fs-5">₱@finalAmount.ToString("N2")</strong></td></tr>
+                        <tr><th class="bg-light">Status ng Alay</th><td><span class="badge bg-success">CONFIRMED / PAID</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <div class="text-end mt-5 pt-4 border-top">
-            <p class="small text-muted mb-4">Inaprubahan at Tinanggap ni:</p>
-            <p class="fw-bold text-decoration-underline mb-0">Parish Office Secretary / Admin</p>
-            <small class="text-muted">Santo Domingo Church Administration</small>
+            <div class="text-end mt-5 pt-4 border-top">
+                <p class="small text-muted mb-4">Inaprubahan at Tinanggap ni:</p>
+                <p class="fw-bold text-decoration-underline mb-0">Parish Office Secretary / Admin</p>
+                <small class="text-muted">Santo Domingo Church Administration</small>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    window.onload = function() { window.print(); };
-</script>
+    <!-- 80mm Thermal Receipt Version -->
+    <div id="thermal-receipt">
+        <div class="tr-center tr-title">SANTO DOMINGO CHURCH</div>
+        <div class="tr-center">La Naval de Manila, QC</div>
+        <div class="tr-center">OFFICIAL RECEIPT</div>
+        <div class="tr-line"></div>
+        <div class="tr-row"><span>Ref No:</span><span>@Model.ReferenceNo</span></div>
+        <div class="tr-row"><span>Date:</span><span>@Model.CreatedAt.ToString("MM/dd/yy HH:mm")</span></div>
+        <div class="tr-line"></div>
+        <div class="tr-row"><span>Client:</span><span>@Model.RequestorName</span></div>
+        <div class="tr-row"><span>Contact:</span><span>@(string.IsNullOrEmpty(Model.ContactNumber) ? "N/A" : Model.ContactNumber)</span></div>
+        <div class="tr-row"><span>Mass Date:</span><span>@Model.MassDate.ToString("MM/dd/yy")</span></div>
+        <div class="tr-row"><span>Mass Time:</span><span>@formattedTime</span></div>
+        <div class="tr-row"><span>Category:</span><span>@Model.Category</span></div>
+        <div class="tr-line"></div>
+        <div><strong>OFFERINGS:</strong></div>
+        <div style="white-space:pre-line;">@Model.OfferingNames</div>
+        <div class="tr-line"></div>
+        <div class="tr-row"><strong>TOTAL PAID:</strong><strong>₱@finalAmount.ToString("N2")</strong></div>
+        <div class="tr-center" style="margin-top:8px;">*** CONFIRMED / PAID ***</div>
+        <div class="tr-center" style="margin-top:10px;">Thank you & God Bless!</div>
+    </div>
 
+    <script>
+        function printAs(mode) {
+            if (mode === 'thermal') {
+                document.body.classList.add('thermal-mode');
+            } else {
+                document.body.classList.remove('thermal-mode');
+            }
+            window.print();
+        }
+    </script>
 </body>
 </html>

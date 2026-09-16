@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MassIntentionSystem.Models
@@ -42,6 +43,12 @@ namespace MassIntentionSystem.Models
 
         public bool IsAdminEncoded { get; set; } = false; // true kung walk-in encoding ng Admin
 
+        // BAGONG PROPERTIES PARA SA HISTORY TRACKING
+        public bool IsPrinted { get; set; } = false;
+
+        public string? PriestName { get; set; }
+        public DateTime? PrintedAt { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Foreign Key Relationships
@@ -52,5 +59,7 @@ namespace MassIntentionSystem.Models
         public int? MassScheduleId { get; set; }
         [ForeignKey("MassScheduleId")]
         public virtual MassSchedule? MassSchedule { get; set; }
+
+       
     }
 }
