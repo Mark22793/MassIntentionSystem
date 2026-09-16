@@ -31,8 +31,10 @@ namespace MassIntentionSystem.Controllers
         }
 
         // GET: /MassIntention
-        public async Task<IActionResult> Index(string searchString, string status, DateTime? searchDate)
+        public async Task<IActionResult> Index(string searchString, string status, DateTime? searchDate, int page = 1)
         {
+            const int pageSize = 15;
+
             var query = _context.MassIntentions
                 .Include(m => m.Payment)
                 .Include(m => m.MassSchedule)
@@ -74,7 +76,22 @@ namespace MassIntentionSystem.Controllers
             ViewBag.CurrentStatus = status;
             ViewBag.CurrentDate = searchDate?.ToString("yyyy-MM-dd");
 
-            var intentions = await query.OrderByDescending(m => m.CreatedAt).ToListAsync();
+            int totalCount = await query.CountAsync();
+            int totalPages = totalCount == 0 ? 1 : (int)Math.Ceiling(totalCount / (double)pageSize);
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+
+            var intentions = await query
+                .OrderByDescending(m => m.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.Page = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalCount = totalCount;
+            ViewBag.PageSize = pageSize;
+
             return View(intentions);
         }
 
@@ -455,6 +472,121 @@ namespace MassIntentionSystem.Controllers
             var intention = await _context.MassIntentions
                 .Include(m => m.Payment)
                 .Include(m => m.MassSchedule)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (intention == null) return NotFound();
+            return View(intention);
+        }
+
+        // GET: /MassIntention/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            var intention = await _context.MassIntentions
+                .Include(m => m.Payment)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (intention == null) return NotFound();
+
+            ViewBag.Priests = await _context.Priests.OrderBy(p => p.Name).ToListAsync();
+            return View(intention);
+        }
+
+        // POST: /MassIntention/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("RequestorName,ContactNumber,RequestorEmail,PriestName,Category,OfferingNames,MassDate,PaymentStatus")] MassIntention form,
+            string rawMassTime,
+            decimal amount)
+        {
+            var intention = await _context.MassIntentions
+                .Include(m => m.Payment)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (intention == null) return NotFound();
+
+            // Server-side validation of required fields
+            if (string.IsNullOrWhiteSpace(form.RequestorName) ||
+                string.IsNullOrWhiteSpace(form.ContactNumber) ||
+                string.IsNullOrWhiteSpace(form.OfferingNames))
+            {
+                ViewBag.Error = "Paki-kumpleto ang mga kinakailangang fields (Pangalan, Contact, at Intention).";
+                ViewBag.Priests = await _context.Priests.OrderBy(p => p.Name).ToListAsync();
+                // Preserve user input for redisplay
+                intention.RequestorName = form.RequestorName;
+                intention.ContactNumber = form.ContactNumber;
+                intention.RequestorEmail = form.RequestorEmail;
+                intention.PriestName = form.PriestName;
+                intention.Category = form.Category;
+                intention.OfferingNames = form.OfferingNames;
+                intention.MassDate = form.MassDate == default ? intention.MassDate : form.MassDate;
+                return View(intention);
+            }
+
+            try
+            {
+                // Parse the mass time (accepts "HH:mm:ss", "HH:mm" or a full datetime)
+                string timeInput = !string.IsNullOrEmpty(rawMassTime) ? rawMassTime : Request.Form["rawMassTime"].ToString();
+                if (!string.IsNullOrEmpty(timeInput))
+                {
+                    if (TimeSpan.TryParse(timeInput, out var parsedSpan))
+                        intention.MassTime = parsedSpan;
+                    else if (DateTime.TryParse(timeInput, out var parsedDt))
+                        intention.MassTime = parsedDt.TimeOfDay;
+                }
+
+                intention.RequestorName = form.RequestorName.Trim();
+                intention.ContactNumber = form.ContactNumber.Trim();
+                intention.RequestorEmail = form.RequestorEmail;
+                intention.PriestName = form.PriestName;
+                intention.Category = form.Category;
+                intention.OfferingNames = form.OfferingNames;
+                intention.MassDate = form.MassDate;
+
+                if (!string.IsNullOrWhiteSpace(form.PaymentStatus))
+                    intention.PaymentStatus = form.PaymentStatus;
+
+                // Keep the linked payment amount in sync when provided
+                if (amount > 0)
+                {
+                    if (intention.Payment != null)
+                    {
+                        intention.Payment.Amount = amount;
+                    }
+                    else
+                    {
+                        var payment = new Payment
+                        {
+                            MassIntentionId = intention.Id,
+                            Amount = amount,
+                            PaymentMethod = "Cash",
+                            Status = intention.PaymentStatus,
+                            PaymentDate = DateTime.Now
+                        };
+                        _context.Payments.Add(payment);
+                        await _context.SaveChangesAsync();
+                        intention.PaymentId = payment.Id;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Matagumpay na na-update ang Mass Intention.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = "Database Error: " + (ex.InnerException?.Message ?? ex.Message);
+                ViewBag.Priests = await _context.Priests.OrderBy(p => p.Name).ToListAsync();
+                return View(intention);
+            }
+        }
+
+        // GET: /MassIntention/Certificate/5  (Landscape Mass Intention Certificate)
+        public async Task<IActionResult> Certificate(int id)
+        {
+            var intention = await _context.MassIntentions
+                .Include(m => m.Payment)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (intention == null) return NotFound();

@@ -1,64 +1,87 @@
-﻿@model MassIntentionSystem.Models.MassIntention
-
+@model MassIntentionSystem.Models.MassIntention
 @{
-    ViewData["Title"] = "Intention Details";
+    ViewData["Title"] = "Detalye ng Mass Intention";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool paid = Model.PaymentStatus is "Verified" or "Confirmed" or "CONFIRMED / PAID" or "Paid";
+    bool cancelled = Model.PaymentStatus == "Cancelled";
+    string statusLabel = paid ? "CONFIRMED / PAID" : (cancelled ? "CANCELLED" : "PENDING");
+    string statusClass = paid ? "bg-success" : (cancelled ? "bg-danger" : "bg-warning text-dark");
+    string timeText = DateTime.Today.Add(Model.MassTime).ToString("h:mm tt");
 }
 
-<div class="container mt-4">
+<div class="container my-4 my-md-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow border-0">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0"><i class="bi bi-file-earmark-text"></i> Detalye ng Mass Intention</h4>
-                    <span class="badge bg-light text-primary fs-6">@Model.ReferenceNo</span>
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <div class="card-header bg-navy text-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+                    <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Detalye ng Mass Intention</h5>
+                    <span class="badge bg-light text-dark fs-6">@Model.ReferenceNo</span>
                 </div>
+
                 <div class="card-body p-4">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Petsa ng Misa:</strong>
-                            <p class="text-muted">@Model.MassDate.ToString("MMMM dd, yyyy")</p>
+                    <div class="d-flex justify-content-end mb-3">
+                        <span class="badge @statusClass rounded-pill px-3 py-2">@statusLabel</span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="text-muted small text-uppercase">Nag-request</div>
+                            <div class="fw-semibold">@Model.RequestorName</div>
                         </div>
-                        <div class="col-md-6">
-                            <strong>Oras ng Misa:</strong>
-                            <p class="text-muted">@Model.MassTime</p>
+                        <div class="col-sm-6">
+                            <div class="text-muted small text-uppercase">Contact</div>
+                            <div class="fw-semibold">@(string.IsNullOrEmpty(Model.ContactNumber) ? "N/A" : Model.ContactNumber)</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small text-uppercase">Petsa ng Misa</div>
+                            <div class="fw-semibold">@Model.MassDate.ToString("MMMM dd, yyyy")</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small text-uppercase">Oras ng Misa</div>
+                            <div class="fw-semibold">@timeText</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small text-uppercase">Pari / Celebrant</div>
+                            <div class="fw-semibold">
+                                @(string.IsNullOrWhiteSpace(Model.PriestName) ? "Hindi pa nakatalaga" : "Fr. " + Model.PriestName)
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small text-uppercase">Kategorya</div>
+                            <div class="fw-semibold">@Model.Category</div>
+                        </div>
+                        @if (Model.Payment != null && Model.Payment.Amount > 0)
+                        {
+                            <div class="col-sm-6">
+                                <div class="text-muted small text-uppercase">Halaga (Offering)</div>
+                                <div class="fw-semibold text-success">₱@Model.Payment.Amount.ToString("N2")</div>
+                            </div>
+                        }
+                        <div class="col-sm-6">
+                            <div class="text-muted small text-uppercase">Petsa ng Pag-encode</div>
+                            <div class="fw-semibold">@Model.CreatedAt.ToString("MMMM dd, yyyy")</div>
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Kategorya:</strong>
-                            <p class="text-muted">@Model.Category</p>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Status:</strong>
-                            <p>
-                                <span class="badge bg-warning text-dark">@Model.PaymentStatus</span>
-                            </p>
-                        </div>
+                    <div class="mt-4">
+                        <div class="text-muted small text-uppercase mb-1">Mga Pangalan na Ipagdarasal</div>
+                        <div class="p-3 bg-light rounded border" style="white-space: pre-line;">@Model.OfferingNames</div>
                     </div>
 
-                    <div class="mb-3">
-                        <strong>Mga Pangalan na Ipagdarasal:</strong>
-                        <div class="p-3 bg-light rounded border text-secondary">
-                            @Model.OfferingNames
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Nag-request:</strong>
-                            <p class="text-muted">@Model.RequestorName</p>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Contact:</strong>
-                            <p class="text-muted">@Model.ContactNumber</p>
-                        </div>
-                    </div>
-
-                    <div class="d-flex gap-2 mt-4">
-                        <a asp-action="Track" class="btn btn-outline-secondary">Mag-track ng Iba</a>
-                        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Bumalik sa Home</a>
+                    <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top">
+                        <a asp-action="Certificate" asp-route-id="@Model.Id" target="_blank" class="btn btn-navy">
+                            <i class="bi bi-award-fill me-1"></i> Print Certificate
+                        </a>
+                        <a asp-action="PrintReceipt" asp-route-id="@Model.Id" target="_blank" class="btn btn-outline-secondary">
+                            <i class="bi bi-receipt me-1"></i> Print Receipt
+                        </a>
+                        <a asp-action="Track" class="btn btn-outline-secondary">
+                            <i class="bi bi-search me-1"></i> Mag-track ng Iba
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary ms-auto">
+                            <i class="bi bi-house me-1"></i> Home
+                        </a>
                     </div>
                 </div>
             </div>

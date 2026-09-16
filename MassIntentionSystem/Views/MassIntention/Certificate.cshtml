@@ -1,0 +1,332 @@
+@model MassIntentionSystem.Models.MassIntention
+@{
+    Layout = null;
+
+    // ---- Dynamic, safely-formatted values (never print null / raw DB formats) ----
+    string requestor = string.IsNullOrWhiteSpace(Model.RequestorName) ? "—" : Model.RequestorName.Trim();
+
+    string offerings = string.IsNullOrWhiteSpace(Model.OfferingNames) ? "—" : Model.OfferingNames.Trim();
+
+    string categoryLabel = Model.Category switch
+    {
+        MassIntentionSystem.Models.IntentionCategory.Healing => "Healing & Good Health",
+        MassIntentionSystem.Models.IntentionCategory.Thanksgiving => "Thanksgiving",
+        MassIntentionSystem.Models.IntentionCategory.EternalRepose => "Eternal Repose of the Faithful Departed",
+        _ => "Special Intention"
+    };
+
+    string massDateText = Model.MassDate.ToString("MMMM dd, yyyy");
+    string massTimeText = DateTime.Today.Add(Model.MassTime).ToString("h:mm tt");
+    string issuedText = DateTime.Now.ToString("MMMM dd, yyyy");
+
+    // Priest: graceful handling — format as "REV. FR. NAME"; fall back cleanly when unassigned.
+    string priestDisplay;
+    if (string.IsNullOrWhiteSpace(Model.PriestName))
+    {
+        priestDisplay = "The Officiating Priest";
+    }
+    else
+    {
+        string p = Model.PriestName.Trim();
+        if (p.StartsWith("Fr.", StringComparison.OrdinalIgnoreCase)) p = p.Substring(3).Trim();
+        if (p.StartsWith("Rev.", StringComparison.OrdinalIgnoreCase)) p = p.Substring(4).Trim();
+        priestDisplay = "Rev. Fr. " + p;
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mass Intention Certificate — @Model.ReferenceNo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <style>
+        :root {
+            --cert-navy: #0F172A;
+            --cert-gold: #B8860B;
+            --cert-gold-light: #D4AF37;
+            --cert-ink: #1E293B;
+            --cert-muted: #475569;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #52585f;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            color: var(--cert-ink);
+        }
+
+        /* ---------- Screen toolbar (hidden on print) ---------- */
+        .toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            gap: .6rem;
+            padding: 14px;
+            background: rgba(15, 23, 42, .92);
+            box-shadow: 0 2px 10px rgba(0,0,0,.25);
+        }
+        .toolbar button, .toolbar a {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: .9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: .55rem;
+            padding: .55rem 1.15rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+        }
+        .btn-print { background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; }
+        .btn-close { background: #fff; color: #334155; }
+        .btn-print:hover { filter: brightness(1.05); }
+        .btn-close:hover { background: #e2e8f0; }
+
+        /* ---------- Certificate sheet: A4 landscape ---------- */
+        .sheet-wrap { padding: 28px 16px; display: flex; justify-content: center; }
+
+        .certificate {
+            position: relative;
+            width: 297mm;
+            min-height: 210mm;
+            background: #fffdf7;
+            padding: 14mm;
+            box-shadow: 0 12px 40px rgba(0,0,0,.35);
+        }
+
+        /* Decorative double frame */
+        .cert-frame {
+            position: absolute;
+            inset: 8mm;
+            border: 2.5px solid var(--cert-gold);
+            pointer-events: none;
+        }
+        .cert-frame::after {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border: 1px solid var(--cert-gold-light);
+        }
+
+        .cert-inner {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            padding: 6mm 10mm;
+            text-align: center;
+        }
+
+        /* Header */
+        .cert-seal {
+            width: 66px;
+            height: 66px;
+            margin: 0 auto 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cert-gold-light), var(--cert-gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 32px;
+            box-shadow: 0 4px 10px rgba(184,134,11,.35);
+        }
+        .cert-parish {
+            font-size: 22pt;
+            font-weight: 700;
+            letter-spacing: .5px;
+            color: var(--cert-navy);
+            text-transform: uppercase;
+            margin: 2px 0 0;
+            line-height: 1.15;
+        }
+        .cert-subparish {
+            font-size: 11pt;
+            color: var(--cert-muted);
+            margin: 4px 0 0;
+            font-style: italic;
+        }
+        .cert-address {
+            font-size: 9.5pt;
+            color: var(--cert-muted);
+            margin: 2px 0 0;
+        }
+
+        .cert-divider {
+            width: 220px;
+            height: 2px;
+            margin: 14px auto 10px;
+            background: linear-gradient(90deg, transparent, var(--cert-gold), transparent);
+        }
+
+        .cert-title {
+            font-size: 26pt;
+            font-weight: 700;
+            color: var(--cert-gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin: 4px 0 2px;
+        }
+        .cert-title-sub {
+            font-size: 10pt;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--cert-muted);
+            margin: 0 0 14px;
+        }
+
+        /* Body */
+        .cert-body { font-size: 12.5pt; line-height: 1.9; color: var(--cert-ink); max-width: 235mm; margin: 0 auto; }
+        .cert-lead { font-size: 11pt; color: var(--cert-muted); margin-bottom: 6px; }
+        .fill {
+            font-weight: 700;
+            color: var(--cert-navy);
+            border-bottom: 1px solid var(--cert-gold);
+            padding: 0 8px;
+            white-space: pre-wrap;
+        }
+        .cert-names {
+            display: block;
+            font-weight: 700;
+            color: var(--cert-navy);
+            font-size: 14pt;
+            margin: 6px auto 4px;
+            white-space: pre-line;
+            max-width: 200mm;
+        }
+
+        /* Meta row: mass details */
+        .cert-meta {
+            display: flex;
+            justify-content: center;
+            gap: 42px;
+            margin: 16px auto 4px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .cert-meta .item { text-align: center; }
+        .cert-meta .label {
+            font-size: 8pt;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--cert-muted);
+            margin-bottom: 2px;
+        }
+        .cert-meta .value { font-size: 11.5pt; font-weight: 700; color: var(--cert-navy); }
+
+        /* Footer: reference + signature */
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 26px;
+            padding: 0 4mm;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        .cert-ref { text-align: left; font-size: 9.5pt; color: var(--cert-muted); }
+        .cert-ref strong { color: var(--cert-navy); font-size: 11pt; display: block; }
+        .cert-sign { text-align: center; min-width: 240px; }
+        .cert-sign .line {
+            border-top: 1.5px solid var(--cert-navy);
+            padding-top: 5px;
+            font-weight: 700;
+            color: var(--cert-navy);
+            font-size: 12pt;
+            text-transform: uppercase;
+        }
+        .cert-sign .role { font-size: 9pt; color: var(--cert-muted); margin-top: 2px; }
+
+        /* ---------- PRINT: landscape, one page, no UI ---------- */
+        @@page {
+            size: A4 landscape;
+            margin: 0;
+        }
+        @@media print {
+            body { background: #fff !important; }
+            .toolbar { display: none !important; }
+            .sheet-wrap { padding: 0 !important; }
+            .certificate {
+                width: 100% !important;
+                min-height: 100vh !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                padding: 12mm !important;
+                page-break-after: avoid;
+            }
+            html, body { width: 297mm; height: 210mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button type="button" class="btn-print" onclick="window.print()">
+            <i class="bi bi-printer-fill"></i> Print Certificate
+        </button>
+        <a class="btn-close" href="@Url.Action("Details", "MassIntention", new { id = Model.Id })">
+            <i class="bi bi-arrow-left"></i> Back to Details
+        </a>
+        <button type="button" class="btn-close" onclick="window.close()">
+            <i class="bi bi-x-lg"></i> Close
+        </button>
+    </div>
+
+    <div class="sheet-wrap">
+        <div class="certificate">
+            <div class="cert-frame"></div>
+            <div class="cert-inner">
+
+                <div class="cert-seal"><i class="bi bi-bank2"></i></div>
+                <h1 class="cert-parish">Santo Domingo Church</h1>
+                <p class="cert-subparish">National Shrine of Our Lady of the Holy Rosary — La Naval de Manila</p>
+                <p class="cert-address">Quezon City, Philippines</p>
+
+                <div class="cert-divider"></div>
+
+                <h2 class="cert-title">Mass Intention Certificate</h2>
+                <p class="cert-title-sub">Certificate of Offered Holy Mass</p>
+
+                <div class="cert-body">
+                    <p class="cert-lead">This is to certify that a Holy Mass will be devoutly offered for the intention of</p>
+                    <span class="cert-names">@offerings</span>
+                    <p style="margin:4px 0;">
+                        under the category of <span class="fill">@categoryLabel</span>,<br />
+                        as humbly requested by <span class="fill">@requestor</span>.
+                    </p>
+
+                    <div class="cert-meta">
+                        <div class="item">
+                            <div class="label">Date of Mass</div>
+                            <div class="value">@massDateText</div>
+                        </div>
+                        <div class="item">
+                            <div class="label">Time of Mass</div>
+                            <div class="value">@massTimeText</div>
+                        </div>
+                        <div class="item">
+                            <div class="label">Celebrant</div>
+                            <div class="value">@priestDisplay</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cert-footer">
+                    <div class="cert-ref">
+                        Certificate / Reference No.
+                        <strong>@Model.ReferenceNo</strong>
+                        Date Issued: @issuedText
+                    </div>
+                    <div class="cert-sign">
+                        <div class="line">@priestDisplay</div>
+                        <div class="role">Celebrant / Parish Priest</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
